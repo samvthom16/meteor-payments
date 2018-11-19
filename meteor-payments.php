@@ -13,7 +13,10 @@
 	}
 	
 	$inc_files = array(
-		'class-meteor-api.php'
+		'class-meteor-base.php',
+		'class-meteor-api.php',
+		'class-meteor-stripe.php',
+		'class-meteor-data.php'
 	);
 
 	foreach( $inc_files as $inc_file ){

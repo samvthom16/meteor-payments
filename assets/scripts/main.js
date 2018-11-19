@@ -9,7 +9,7 @@
 				$errors = $form.find('.payment-errors');
 			
 			// HIDE ERRORS FIELD
-			$errors.hide();
+			
 			
 			// SET YOUR PUBLISHABLE KEY
 			Stripe.setPublishableKey( meteor_settings['key'] );

@@ -2,9 +2,11 @@
 
 	
 	
-	class METEOR_API{
+	class METEOR_API extends METEOR_BASE{
 		
 		var $shortcode;
+		
+		var $stripe;
 		
 		function __construct(){
 			
@@ -15,11 +17,126 @@
 			/** TO LOAD THE ASSETS - SCRIPTS AND STYLES */
 			add_action('the_posts', array( $this, 'assets') );
 			
+			require_once( 'class-meteor-stripe.php' );
+			$this->setStripeAPI( METEOR_STRIPE::getInstance() );
+			
 		}
 		
+		/* GETTER AND SETTER FUNCTIONS */
 		function getShortcode(){ return $this->shortcode; }
 		function setShortcode( $shortcode ){ $this->shortcode = $shortcode;}
 		
+		function getStripeAPI(){ return $this->stripe; }
+		function setStripeAPI( $stripe ){ $this->stripe = $stripe; }
+		/* GETTER AND SETTER FUNCTIONS */
+		
+		
+		function form_field( $field ){
+			
+			$field_class = isset( $field['class'] ) ? $field['class'] : '';
+	
+			_e("<div class='".$field_class."'>");
+				
+				// DISPLAY THE FIELD LABEL
+				if( isset( $field['label'] ) ){ _e( "<label>".$field['label']."</label>" ); }
+				
+				/*
+				* CHECK IF INLINE FIELDS EXISTS, IF YES THEN DISPLAY THEM BY CALLING THE FUNCTION RECURSIVELY
+				*/
+				if( isset( $field['fields'] ) && isset( $field['fields_class'] ) ){ 
+					
+					_e("<div class='".$field['fields_class']."'>");
+					
+					foreach( $field['fields'] as $inline_field ){
+						$this->form_field( $inline_field );
+					}
+					
+					_e("</div>");
+					
+				}
+				
+				/*
+				* DISPLAY THE FIELD BASED ON ITS TYPE
+				*/
+				if( isset( $field['type'] ) ){
+					
+					$tag = '';
+					
+					// FOR CHECKBOXES WRAP UP THE ELEMENTS TAGS WITH THE INLINE LABEL
+					if( in_array( $field['type'], array( 'checkbox' ) ) && isset( $field['inline_label'] ) ){
+						$tag .= "<label class='inline-label'>";
+					}
+					
+					// TAG BEGIN
+					if( in_array( $field['type'], array( 'email', 'number', 'text', 'checkbox' ) ) ){
+						$tag .= "<input type='".$field['type']."'";
+					}
+					elseif( $field['type'] == 'dropdown' ){
+						$tag .= "<select";
+					}
+					elseif( $field['type'] == 'submit' ){
+						$tag .= "<button type='submit'";
+					}
+					
+					foreach( $field as $attr => $val ){
+						if( in_array( $attr, array( 'placeholder', 'size', 'class', 'name') ) ){
+							$tag .= " $attr='$val'";
+						}
+					}
+					
+					// CLOSE THE INPUT TAG
+					if( in_array( $field['type'], array( 'email', 'number', 'text', 'checkbox' ) ) ){
+						$tag .= " />";
+					}
+					elseif( $field['type'] == 'dropdown' ){
+						$tag .= ">";
+						if( isset( $field['options'] ) ){
+							foreach( $field['options'] as $opt_val => $opt_label ){
+								$tag .= "<option value='".$opt_val."'>".$opt_label."</option>";
+							}
+						}
+						$tag .= "</select>";
+					}
+					
+					if( in_array( $field['type'], array( 'submit', 'button' ) ) ){
+						
+						$tag .= ">";
+						
+						if( isset( $field['html'] ) ){
+							$tag .= $field['html'];
+						}
+						
+						$tag .= "</button>";
+					}
+					
+						
+					
+					
+					
+					
+					if( in_array( $field['type'], array( 'checkbox' ) ) && isset( $field['inline_label'] ) ){
+						$tag .= "&nbsp;".$field['inline_label']."</label>";
+					}
+					elseif( isset( $field['inline_label'] ) ){
+						$tag .= "<label class='inline-label'>".$field['inline_label']."</label>";
+					}
+					
+					_e( $tag );
+					
+				}
+			
+			_e("</div>");
+			
+		}
+		
+		function form( $form ){
+			
+			foreach( $form as $field ){
+				$this->form_field( $field );
+			}
+		}
+		
+		/* ENQUEUE SCRIPTS AND STYLES ONLY IF THE SHORTCODE IS PRESENT IN THE PAGE CONTENT */
 		function assets( $posts ){
 			
 			if( $this->has_shortcode( $posts ) ){
@@ -31,10 +148,10 @@
 				
 				$uri = plugin_dir_url( __FILE__ );
 				
-				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.0.0', true);
+				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.0.1', true);
 				
 				wp_localize_script( 'meteor-api', 'meteor_settings', array(
-					'key'	=> $this->getStripeKeys()['publishable']
+					'key'	=> $this->getStripeAPI()->getStripeKeys()['publishable']
 				));
 				
 			}
@@ -42,67 +159,22 @@
 			return $posts;
 		}
 		
-		function getStripeKeys(){
-			
-			return array(
-				"secret"      => "sk_test_IYHIHIPQDGqNDUwZdCVj31wO",
-				"publishable" => "pk_test_h38rqoEGEDZvy9qb1LtgZy5S"	
-					
-			);
-			
-		}
 		
-		function main_shortcode(){
+		
+		
+		/* EXECUTE SHORTCODE */
+		function main_shortcode( $atts ){
 			
 			ob_start();
 			
-			if( isset( $_POST['stripeToken'] ) && !empty( $_POST['stripeToken'] ) ){
+			$error_flag = false;
+			
+			/*
+			* CHECK IF STRIPE TOKEN IS PRESENT THEN EXECUTE THE PROCESSING WITH THE API
+			*/
+			if( isset( $_POST['stripeToken'] ) && !empty( $_POST['stripeToken'] ) && isset( $_POST['meteor-stripe'] ) && wp_verify_nonce( $_POST['meteor-stripe'], 'save' ) ){
 				
-				require_once('stripe-php/init.php');
-				
-				$token  = $_POST['stripeToken'];
-				
-				//set api key
-				$stripeKeys = $this->getStripeKeys();
-				
-				\Stripe\Stripe::setApiKey( $stripeKeys['secret'] );
-				
-				//add customer to stripe
-				$customer = \Stripe\Customer::create(array(
-					'email' 	=> $_POST['email'],
-					'source'  	=> $token
-				));
-				
-				$itemName = "Premium Script CodexWorld";
-				$itemNumber = "PS123456";
-				$itemPrice = 55;
-				$currency = "usd";
-				
-				//charge a credit or a debit card
-				$charge = \Stripe\Charge::create(array(
-					'customer' 		=> $customer->id,
-					'amount'   		=> $itemPrice,
-					'currency' 		=> $currency,
-					'description' 	=> $itemName,
-					'metadata' => array(
-						
-					)
-				));
-				
-				//retrieve charge details
-				$chargeJson = $charge->jsonSerialize();
-				
-				if(	$chargeJson['amount_refunded'] == 0  
-					&& empty($chargeJson['failure_code'])
-					&& $chargeJson['paid'] == 1
-					&& $chargeJson['captured'] == 1 ){
-						
-					print_r( $charge );
-				}
-				
-				
-				
-				
+				$error_flag = $this->getStripeAPI()->processForm( $_POST );
 			}
 			
 			include( 'templates/stripe.php' );
@@ -127,4 +199,4 @@
 	}
 	
 	
-	new METEOR_API;
+	METEOR_API::getInstance();
