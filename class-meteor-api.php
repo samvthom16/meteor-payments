@@ -177,6 +177,10 @@
 				$error_flag = $this->getStripeAPI()->processForm( $_POST );
 			}
 			
+			//$customer = $this->getStripeAPI()->getCustomer( 'samvthom16@gmail.com' );
+			
+			//print_r( $customer );
+			
 			include( 'templates/stripe.php' );
 			
 			return ob_get_clean();

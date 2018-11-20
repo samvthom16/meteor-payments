@@ -28,6 +28,20 @@ class METEOR_STRIPE extends METEOR_BASE{
 		return $customer;
 	}
 	
+	function getCustomer( $email ){
+		
+		$customers = \Stripe\Customer::all( array(
+			'limit'	=> 1,
+			'email' => $email
+		) );
+		
+		if( isset( $customers->data ) && is_array( $customers->data ) ){
+			return $customers->data[0];
+		}
+		
+		return false;
+	}
+	
 	//charge a credit or a debit card
 	function createCharge( $data ){
 		$charge = \Stripe\Charge::create( $data );
@@ -57,6 +71,9 @@ class METEOR_STRIPE extends METEOR_BASE{
 	function processForm( $data ){
 		try{
 			
+			// ADD DECIMAL VALUE
+			$data['amount'] = $data['amount']."00";
+			
 			// BASIC CUSTOMER INFO
 			$customerInfo = array(
 				'email' 		=> $data['email'],
@@ -79,20 +96,26 @@ class METEOR_STRIPE extends METEOR_BASE{
 				'phone'
 			) );
 			
-			//	ADD CUSTOMER TO STRIPE
-			$customer = $this->createCustomer( $customerInfo );
+			// GET CUSTOMER BY EMAIL
+			$customer = $this->getCustomer( $data['email'] );
+			if( ! $customer ){
+				//	CUSTOMER DOES NOT EXIST SO ADD TO STRIPE
+				$customer = $this->createCustomer( $customerInfo );
+			}
 			
 			$data['form_name'] = "ADF Donation Form";
 			
-			$planInfo = array(
-				'amount'	=> $data['amount'],
-				'interval'	=> 'month',
-				'currency'	=> $data['currency'],
-				'product'	=> array(
-					'name'	=> $data['form_name'].' - '.$data['firstname'].' '.$data['lastname']
-				)
-			);
-			$this->createPlan( $planInfo );
+			if( isset( $data['recurring'] ) ){
+				$planInfo = array(
+					'amount'	=> $data['amount'],
+					'interval'	=> 'month',
+					'currency'	=> $data['currency'],
+					'product'	=> array(
+						'name'	=> $data['form_name'].' - '.$data['firstname'].' '.$data['lastname']
+					)
+				);
+				$this->createPlan( $planInfo );
+			}
 			
 			// BASIC CHARGE INFO
 			$chargeInfo = array(
