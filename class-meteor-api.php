@@ -15,7 +15,8 @@
 			add_shortcode( $this->getShortcode(), array( $this, 'main_shortcode' ), 100 );
 			
 			/** TO LOAD THE ASSETS - SCRIPTS AND STYLES */
-			add_action('the_posts', array( $this, 'assets') );
+			//add_action('the_posts', array( $this, 'assets') );
+			add_action( 'wp_enqueue_scripts', array( $this, 'assets' ) );
 			
 			require_once( 'class-meteor-stripe.php' );
 			$this->setStripeAPI( METEOR_STRIPE::getInstance() );
@@ -110,10 +111,6 @@
 					}
 					
 						
-					
-					
-					
-					
 					if( in_array( $field['type'], array( 'checkbox' ) ) && isset( $field['inline_label'] ) ){
 						$tag .= "&nbsp;".$field['inline_label']."</label>";
 					}
@@ -137,9 +134,9 @@
 		}
 		
 		/* ENQUEUE SCRIPTS AND STYLES ONLY IF THE SHORTCODE IS PRESENT IN THE PAGE CONTENT */
-		function assets( $posts ){
+		function assets( /*$posts*/ ){
 			
-			if( $this->has_shortcode( $posts ) ){
+			//if( $this->has_shortcode( $posts ) ){
 				
 				wp_enqueue_script( 'jquery' );
 				
@@ -154,9 +151,9 @@
 					'key'	=> $this->getStripeAPI()->getStripeKeys()['publishable']
 				));
 				
-			}
+			//}
 			
-			return $posts;
+			//return $posts;
 		}
 		
 		
