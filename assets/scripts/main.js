@@ -47,7 +47,7 @@
 						
 					addTokenField( token );
 						
-					$form.get(0).submit();
+					//$form.get(0).submit();
 				}
 			}
 			
@@ -78,6 +78,8 @@
 }(jQuery));
 
 jQuery(document).ready(function(){
+	
+	alert('hello');
 	
 	jQuery( 'form[data-behaviour~=meteor-stripe-form]' ).meteor_stripe();
 	
