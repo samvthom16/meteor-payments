@@ -138,7 +138,7 @@
 			
 			//if( $this->has_shortcode( $posts ) ){
 				
-				wp_die();
+				//wp_die();
 				
 				wp_enqueue_script( 'jquery' );
 				
