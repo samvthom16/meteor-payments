@@ -29,7 +29,7 @@
 			* HANDLES STRIPE RESPONSE
 			*/ 
 			function stripeResponse( status, response ){
-				console.log( response );
+				
 				if( response.error ){
 					
 					// enable the submit button
@@ -47,7 +47,7 @@
 						
 					addTokenField( token );
 						
-					//$form.get(0).submit();
+					$form.get(0).submit();
 				}
 			}
 			
@@ -78,8 +78,6 @@
 }(jQuery));
 
 jQuery(document).ready(function(){
-	
-	alert('hello');
 	
 	jQuery( 'form[data-behaviour~=meteor-stripe-form]' ).meteor_stripe();
 	
