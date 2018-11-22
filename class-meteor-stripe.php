@@ -42,6 +42,19 @@ class METEOR_STRIPE extends METEOR_BASE{
 		return false;
 	}
 	
+	function deleteCustomer( $email ){
+		$customers = \Stripe\Customer::all( array(
+			'limit'	=> 100,
+			'email' => $email
+		) );
+		
+		//print_r( $customers );
+		
+		foreach( $customers->data as $customer ){
+			$customer->delete();
+		}
+	}
+	
 	//charge a credit or a debit card
 	function createCharge( $data ){
 		$charge = \Stripe\Charge::create( $data );
@@ -59,10 +72,11 @@ class METEOR_STRIPE extends METEOR_BASE{
 	/*
 	* ADD META DATA TO AN ARRAY IF THE KEYS MATCH FROM THE INPUT DATA
 	*/
-	function addMetaData( $finalData, $data, $slugs){
+	function addMetaData( $data, $slugs){
+		$finalData = array();
 		foreach( $slugs as $slug ){
 			if( isset( $data[ $slug ] ) ){
-				$finalData['metadata'][$slug] = $data[ $slug ];
+				$finalData[$slug] = $data[ $slug ];
 			}
 		}
 		return $finalData;
@@ -72,46 +86,67 @@ class METEOR_STRIPE extends METEOR_BASE{
 		try{
 			
 			// ADD DECIMAL VALUE
-			$data['amount'] = $data['amount']."00";
+			$data['Amount'] = $data['Amount']."00";
+			
+			$data['ReadUkGiftAidAgreement'] = false;
+			$data['HasAgreedToUkGiftAid'] = false;
+			
+			if( 'GB' == $data['AddressCountry'] ){
+				
+				if( isset( $data['ReadUkGiftAidAgreement'] ) && $data['ReadUkGiftAidAgreement'] ){
+					$data['ReadUkGiftAidAgreement'] = true;
+				}
+				
+				if( isset( $data['HasAgreedToUkGiftAid'] ) && $data['HasAgreedToUkGiftAid'] ){
+					$data['HasAgreedToUkGiftAid'] = true;
+				}
+				
+			}
 			
 			// BASIC CUSTOMER INFO
 			$customerInfo = array(
-				'email' 		=> $data['email'],
-				'description'	=> $data['firstname']." ".$data['lastname'],
+				'email' 		=> $data['Email'],
+				'description'	=> $data['FirstName']." ".$data['LastName'],
 				'source'  		=> $data['stripeToken'],
 				'metadata'		=> array()
 			);
 			
 			// ADD METADATA TO CUSTOMER INFO
-			$customerInfo = $this->addMetaData( $customerInfo, $data, array( 
-				'firstname', 
-				'lastname', 
-				'address_line1', 
-				'address_line2', 
-				'address_city', 
-				'address_state', 
-				'address_zip', 
-				'address_country',
-				'email',
-				'phone'
+			$customerInfo['metadata'] = $this->addMetaData( $data, array( 
+				'FirstName', 
+				'LastName', 
+				'AddressLine1', 
+				'AddressLine2', 
+				'AddressCity', 
+				'AddressState', 
+				'AddressZip', 
+				'AddressCountry',
+				'Email',
+				'Phone',
+				'ReadUkGiftAidAgreement',
+				'HasAgreedToUkGiftAid'
 			) );
 			
 			// GET CUSTOMER BY EMAIL
-			$customer = $this->getCustomer( $data['email'] );
+			$customer = $this->getCustomer( $data['Email'] );
 			if( ! $customer ){
 				//	CUSTOMER DOES NOT EXIST SO ADD TO STRIPE
 				$customer = $this->createCustomer( $customerInfo );
 			}
+			else{
+				$customer->metadata = $customerInfo['metadata'];
+				$customer->save();
+			}
 			
 			
 			
-			if( isset( $data['recurring'] ) ){
+			if( isset( $data['Recurring'] ) && $data['Recurring'] ){
 				$planInfo = array(
-					'amount'	=> $data['amount'],
+					'amount'	=> $data['Amount'],
 					'interval'	=> 'month',
-					'currency'	=> $data['currency'],
+					'currency'	=> $data['Currency'],
 					'product'	=> array(
-						'name'	=> $data['form_name'].' - '.$data['firstname'].' '.$data['lastname']
+						'name'	=> $data['FormName'].' - '.$data['FirstName'].' '.$data['LastName']
 					)
 				);
 				$this->createPlan( $planInfo );
@@ -120,16 +155,16 @@ class METEOR_STRIPE extends METEOR_BASE{
 			// BASIC CHARGE INFO
 			$chargeInfo = array(
 				'customer' 		=> $customer->id,
-				'amount'   		=> $data['amount'],
-				'currency' 		=> $data['currency'],
-				'description' 	=> $data['form_name'],
+				'amount'   		=> $data['Amount'],
+				'currency' 		=> $data['Currency'],
+				'description' 	=> $data['FormName'],
 				'metadata' 		=> array()
 			);
 			
 			// ADD METADATA TO BASIC CHARGE INFO
-			$chargeInfo = $this->addMetaData( $chargeInfo, $data, array( 
-				'firstname', 
-				'lastname', 
+			$chargeInfo['metadata'] = $this->addMetaData( $data, array( 
+				'FirstName', 
+				'LastName', 
 			) );
 					
 			// CHARGE THE CARD TO STRIPE
@@ -140,12 +175,14 @@ class METEOR_STRIPE extends METEOR_BASE{
 				&& $chargeJson['paid'] == 1
 				&& $chargeJson['captured'] == 1 ){
 				
-				return 'Thank you for your donation.';
+				return array( 'success' => 1, 'message' => 'Thank you for your donation.');
 				
 			}
 				
 		}catch( Exception $e ){
-			return $e->getMessage();
+			
+			return array( 'success' => 0, 'message' => $e->getMessage() );
+			
 		}
 		
 	}

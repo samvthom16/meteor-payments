@@ -18,6 +18,9 @@
 			//add_action('the_posts', array( $this, 'assets') );
 			add_action( 'wp_enqueue_scripts', array( $this, 'assets' ) );
 			
+			add_action( 'wp_ajax_meteor_process_form', array( $this, 'ajaxProcessForm' ) );
+			add_action( 'wp_ajax_nopriv_meteor_process_form', array( $this, 'ajaxProcessForm' ) );
+			
 			require_once( 'class-meteor-stripe.php' );
 			$this->setStripeAPI( METEOR_STRIPE::getInstance() );
 			
@@ -30,6 +33,27 @@
 		function getStripeAPI(){ return $this->stripe; }
 		function setStripeAPI( $stripe ){ $this->stripe = $stripe; }
 		/* GETTER AND SETTER FUNCTIONS */
+		
+		function ajaxProcessForm(){
+			
+			$data = array();
+			
+			array_push( $data, 'stripe-check' );
+			
+			if( 'stripe' == $_POST['API'] ){
+				
+				array_push( $data, 'stripe-check' );
+				
+				if( isset( $_POST['stripeToken'] ) && !empty( $_POST['stripeToken'] ) && isset( $_POST['meteor-stripe'] ) && wp_verify_nonce( $_POST['meteor-stripe'], 'save' ) ){
+					$data = $this->getStripeAPI()->processForm( $_POST );
+				}
+				
+			}
+			
+			print_r( wp_json_encode( $data ) );
+			
+			wp_die();
+		}
 		
 		
 		function form_field( $field ){
@@ -147,7 +171,7 @@
 				
 				$uri = plugin_dir_url( __FILE__ );
 				
-				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.0.4', true);
+				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.0.6', true);
 				
 				wp_localize_script( 'meteor-api', 'meteor_settings', array(
 					'key'	=> $this->getStripeAPI()->getStripeKeys()['publishable']
@@ -179,10 +203,6 @@
 				
 				$error_flag = $this->getStripeAPI()->processForm( $_POST );
 			}
-			
-			//$customer = $this->getStripeAPI()->getCustomer( 'samvthom16@gmail.com' );
-			
-			//print_r( $customer );
 			
 			include( 'templates/stripe.php' );
 			

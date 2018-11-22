@@ -1,10 +1,16 @@
 <?php
 	
 	$form = array(
+		'api'	=> array(
+			'class'			=> 'form-field',
+			'type'			=> 'hidden',
+			'name'			=> 'API',
+			'value'			=> 'stripe'
+		),
 		'form_name'	=> array(
 			'class'			=> 'form-field',
 			'type'			=> 'hidden',
-			'name'			=> 'form_name',
+			'name'			=> 'FormName',
 			'value'			=> $atts['name']
 		),
 		'amount'	=> array(
@@ -14,14 +20,14 @@
 			'fields' 	=> array(
 				'amount'	=> array(
 					'type'			=> 'number',
-					'name'			=> 'amount',
+					'name'			=> 'Amount',
 					'placeholder'	=> 'Enter Amount',
 					'size'			=> '50'	,
 					'class'			=> 'fields',
 				),
 				'currency'	=> array(
 					'type'			=> 'dropdown',
-					'name'			=> 'currency',
+					'name'			=> 'Currency',
 					'options'		=> METEOR_DATA::getInstance()->currencies(),
 					'inline_label'	=> 'Currency',
 					'class'			=> 'fields',
@@ -32,9 +38,8 @@
 			'inline_label' 	=> 'Pay this amount monthly',
 			'class'			=> 'form-field',
 			'type'			=> 'checkbox',
-			'name'			=> 'recurring',
-			'placeholder'	=> 'Email Address',
-			'size'			=> '100'
+			'name'			=> 'Recurring',
+			'value'			=> '1'
 		),
 		/* NAME FIELD WITH INLINE FIELDS - FIRSTNAME AND LASTNAME */
 		'name'	=> array(
@@ -44,14 +49,14 @@
 			'fields'	=> array(
 				'firstname'	=> array(
 					'type'			=> 'text',
-					'name'			=> 'firstname',
+					'name'			=> 'FirstName',
 					'placeholder'	=> 'First Name',
 					'size'			=> '50',
 					'class'			=> 'fields',
 				),
 				'lastname'	=> array(
 					'type'			=> 'text',
-					'name'			=> 'lastname',
+					'name'			=> 'LastName',
 					'placeholder'	=> 'Last Name',
 					'size'			=> '50',
 					'class'			=> 'fields',
@@ -63,7 +68,7 @@
 			'label'			=> 'Email',
 			'class'			=> 'form-field',
 			'type'			=> 'email',
-			'name'			=> 'email',
+			'name'			=> 'Email',
 			'placeholder'	=> 'Email Address',
 			'size'			=> '100'
 		),
@@ -115,37 +120,59 @@
 					'type'			=> 'text',
 					'placeholder'	=> 'Street Address',
 					'class'			=> 'addr-line1',
-					'name'			=> 'address_line1'
+					'name'			=> 'AddressLine1'
 				),
 				'address-line2'	=> array(
 					'type'			=> 'text',
 					'placeholder'	=> 'Address Line 2',
 					'class'			=> 'addr-line2',
-					'name'			=> 'address_line2'
+					'name'			=> 'AddressLine2'
 				),
 				'address-city'	=> array(
 					'type'			=> 'text',
 					'placeholder'	=> 'City',
 					'class'			=> 'addr-city',
-					'name'			=> 'address_city'
+					'name'			=> 'AddressCity'
 				),
 				'address-state'	=> array(
 					'type'			=> 'text',
 					'placeholder'	=> 'State / Province / Region',
 					'class'			=> 'addr-state',
-					'name'			=> 'address_state'
+					'name'			=> 'AddressState'
 				),
 				'address-zip'	=> array(
 					'type'			=> 'text',
 					'placeholder'	=> 'Postal Code / Zip',
 					'class'			=> 'addr-zip',
-					'name'			=> 'address_zip'
+					'name'			=> 'AddressZip'
 				),
 				'address-country' => array(
 					'type'			=> 'dropdown',
-					'name'			=> 'address_country',
+					'name'			=> 'AddressCountry',
 					'class'			=> 'addr-country',
 					'options'		=> METEOR_DATA::getInstance()->countries()
+				),
+			)
+		),
+		
+		'specificUK' => array(
+			'label'			=> 'Only for UK residents',
+			'class'			=> 'form-field',
+			'fields_class'	=> 'fields fields-uk',
+			'fields'		=> array(
+				'readUK'	=> array(
+					'inline_label' 	=> 'Read UK Gift Aid Agreement',
+					'class'			=> 'form-field',
+					'type'			=> 'checkbox',
+					'name'			=> 'ReadUkGiftAidAgreement',
+					'value'			=> '1'
+				),
+				'agreedUK'	=> array(
+					'inline_label' 	=> 'Has Agreed To Uk Gift Aid',
+					'class'			=> 'form-field',
+					'type'			=> 'checkbox',
+					'name'			=> 'HasAgreedToUkGiftAid',
+					'value'			=> '1'
 				),
 			)
 		),
@@ -154,11 +181,13 @@
 			'label'			=> 'Phone',
 			'class'			=> 'form-field',
 			'type'			=> 'text',
-			'name'			=> 'phone',
+			'name'			=> 'Phone',
 			'placeholder'	=> 'Phone Number',
 			'size'			=> '100',
 			'inline_label'	=> '*Please keep me informed about your work and how to best support you by phone'
 		),
+		
+		
 		
 		'submit'	=> array(
 			'type'	=> 'submit',
@@ -170,9 +199,9 @@
 ?>
 
 <!-- stripe payment form -->
-<form method="POST" data-behaviour='meteor-stripe-form'>
+<form method="POST" data-behaviour='meteor-stripe-form' data-url="<?php _e( admin_url('admin-ajax.php')."?action=meteor_process_form" );?>">
 	<!-- display errors returned by createToken -->
-	<div class="payment-errors <?php if( ! $error_flag ) _e('hide');?>"><?php if( $error_flag ) _e( $error_flag );?></div>
+	
 	<?php
 	
 		wp_nonce_field( 'save', 'meteor-stripe' );
@@ -180,6 +209,7 @@
 		$this->form( $form );
 	
 	?>
+	<div class="payment-errors"><?php if( $error_flag ) _e( $error_flag );?></div>
 </form>
 <style>
 	form[data-behaviour~=meteor-stripe-form]{
@@ -195,10 +225,9 @@
 		padding			: 20px;
 		margin-top		: 20px;
 		margin-bottom	: 20px;
+		display			: none;
 	}
-	form[data-behaviour~=meteor-stripe-form] .payment-errors.hide{
-		display: none;
-	}
+	
 	
 	
 	form[data-behaviour~=meteor-stripe-form] .form-field{
@@ -231,6 +260,10 @@
 		display					: grid;
 		grid-template-columns	: 150px 150px;
 		grid-gap				: 20px;
+	}
+	
+	form[data-behaviour~=meteor-stripe-form] .fields-uk .form-field{
+		margin-bottom: 0;
 	}
 	
 	form[data-behaviour~=meteor-stripe-form] .inline-label{

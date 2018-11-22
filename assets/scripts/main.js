@@ -8,11 +8,41 @@
 				$submit	= $form.find('[type~=submit]'),
 				$errors = $form.find('.payment-errors');
 			
-			// HIDE ERRORS FIELD
-			
-			
 			// SET YOUR PUBLISHABLE KEY
 			Stripe.setPublishableKey( meteor_settings['key'] );
+			
+			/*
+			* DISPLAYS THE ERROR MESSAGE
+			*/
+			function showError( message ){
+				// display the errors on the form
+				$errors.html( message );
+				$errors.show();
+			}
+			
+			/*
+			*	
+			*/
+			function showLoading(){
+				
+				// DISABLE THE SUBMIT BUTTON TO PREVENT RESUBMISSION
+				$submit.attr( 'disabled', 'disabled' );
+				
+				$submit.data( 'text', $submit.html() );
+				$submit.html( 'Processing..' );
+			}
+			
+			/*
+			*
+			*/
+			function stopLoading(){
+				// enable the submit button
+				$submit.removeAttr("disabled");
+				
+				// REVERT BACK THE ORIGINAL TEXT OF THE BUTTON
+				$submit.html( $submit.data( 'text' ) );
+			}
+			
 			
 			/*
 			* APPEND TOKEN FIELD TO THE FORM
@@ -32,22 +62,18 @@
 				
 				if( response.error ){
 					
-					// enable the submit button
-					$submit.removeAttr("disabled");
+					stopLoading();
 						
-					// display the errors on the form
-					$errors.html( response.error.message );
-					$errors.show();
+					showError( response.error.message );
 					
 				} 
 				else {
 						
 					//get token id
-					var token = response['id'];
-						
-					addTokenField( token );
-						
-					$form.get(0).submit();
+					addTokenField( response['id'] );
+					
+					saveForm();
+					
 				}
 			}
 			
@@ -60,10 +86,35 @@
 				}
 			}
 			
+			
+			function saveForm(){
+				
+				// AJAX REQUEST
+				jQuery.ajax({
+					method: 'POST',
+					url: $form.data('url'), 
+					dataType: "json", 
+					data: $form.serialize(),
+					success: function( response ){
+						
+						if( response.message ){
+							
+							showError( response.message );
+									
+						}
+						
+						stopLoading();
+						
+					}
+				});
+				
+			}
+			
 			$form.submit( function(){
 				
-				// DISABLE THE SUBMIT BUTTON TO PREVENT RESUBMISSION
-				$submit.attr( 'disabled', 'disabled' );
+				
+				
+				showLoading();
 				
 				// create single-use token to charge the user
 				Stripe.createToken( getStripeParams(), stripeResponse );
