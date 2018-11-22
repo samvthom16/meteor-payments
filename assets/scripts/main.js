@@ -29,7 +29,7 @@
 			* HANDLES STRIPE RESPONSE
 			*/ 
 			function stripeResponse( status, response ){
-				
+				console.log( response );
 				if( response.error ){
 					
 					// enable the submit button

@@ -103,7 +103,7 @@ class METEOR_STRIPE extends METEOR_BASE{
 				$customer = $this->createCustomer( $customerInfo );
 			}
 			
-			$data['form_name'] = "ADF Donation Form";
+			
 			
 			if( isset( $data['recurring'] ) ){
 				$planInfo = array(

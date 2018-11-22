@@ -68,7 +68,7 @@
 					}
 					
 					// TAG BEGIN
-					if( in_array( $field['type'], array( 'email', 'number', 'text', 'checkbox' ) ) ){
+					if( in_array( $field['type'], array( 'email', 'number', 'text', 'checkbox', 'hidden' ) ) ){
 						$tag .= "<input type='".$field['type']."'";
 					}
 					elseif( $field['type'] == 'dropdown' ){
@@ -79,13 +79,13 @@
 					}
 					
 					foreach( $field as $attr => $val ){
-						if( in_array( $attr, array( 'placeholder', 'size', 'class', 'name') ) ){
+						if( in_array( $attr, array( 'placeholder', 'size', 'class', 'name', 'value') ) ){
 							$tag .= " $attr='$val'";
 						}
 					}
 					
 					// CLOSE THE INPUT TAG
-					if( in_array( $field['type'], array( 'email', 'number', 'text', 'checkbox' ) ) ){
+					if( in_array( $field['type'], array( 'email', 'number', 'text', 'checkbox', 'hidden' ) ) ){
 						$tag .= " />";
 					}
 					elseif( $field['type'] == 'dropdown' ){
@@ -148,7 +148,7 @@
 				
 				$uri = plugin_dir_url( __FILE__ );
 				
-				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.0.1', true);
+				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.0.2', true);
 				
 				wp_localize_script( 'meteor-api', 'meteor_settings', array(
 					'key'	=> $this->getStripeAPI()->getStripeKeys()['publishable']
@@ -164,6 +164,10 @@
 		
 		/* EXECUTE SHORTCODE */
 		function main_shortcode( $atts ){
+			
+			$atts = shortcode_atts( array(
+				'name' => 'Donation Form'
+			), $atts, $this->getShortcode() );
 			
 			ob_start();
 			

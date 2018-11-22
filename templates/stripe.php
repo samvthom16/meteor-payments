@@ -1,6 +1,12 @@
 <?php
 	
 	$form = array(
+		'form_name'	=> array(
+			'class'			=> 'form-field',
+			'type'			=> 'hidden',
+			'name'			=> 'form_name',
+			'value'			=> $atts['name']
+		),
 		'amount'	=> array(
 			'label'			=> 'Donation Amount',
 			'class'			=> 'form-field',
@@ -190,6 +196,10 @@
 		margin-top		: 20px;
 		margin-bottom	: 20px;
 	}
+	form[data-behaviour~=meteor-stripe-form] .payment-errors.hide{
+		display: none;
+	}
+	
 	
 	form[data-behaviour~=meteor-stripe-form] .form-field{
 		margin-bottom	: 20px;
