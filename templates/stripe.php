@@ -223,7 +223,7 @@
 		display					: grid;
 		grid-template-areas		: 'number number number number'
 			'month year cvc blank';
-		grid-template-columns	: 50px 50px 100px 1fr;
+		grid-template-columns	: 70px 70px 100px 1fr;
 		grid-gap				: 20px;
 	}
 	
