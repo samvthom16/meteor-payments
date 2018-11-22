@@ -138,6 +138,8 @@
 			
 			//if( $this->has_shortcode( $posts ) ){
 				
+				wp_die();
+				
 				wp_enqueue_script( 'jquery' );
 				
 				wp_enqueue_script( 'stripe', 'https://js.stripe.com/v2/', array('jquery'), '1.0.0', true);
