@@ -88,20 +88,28 @@ class METEOR_STRIPE extends METEOR_BASE{
 			// ADD DECIMAL VALUE
 			$data['Amount'] = $data['Amount']."00";
 			
-			$data['ReadUkGiftAidAgreement'] = false;
-			$data['HasAgreedToUkGiftAid'] = false;
-			
-			if( 'GB' == $data['AddressCountry'] ){
-				
-				if( isset( $data['ReadUkGiftAidAgreement'] ) && $data['ReadUkGiftAidAgreement'] ){
-					$data['ReadUkGiftAidAgreement'] = true;
+			/*
+			*	THIS HAS TO BE REFACTORED TO BE ADDED THROUGH ACTION HOOKS
+			*/
+			$booleanData = array(
+				'ReadUkGiftAidAgreement',
+				'HasAgreedToUkGiftAid',
+				'IsIntlEmailOptIn',
+				'IsIntlMailOptIn',
+				'IsIntlPhoneOptIn'
+			);
+			foreach( $booleanData as $booleanSlug ){
+				if( isset( $data[$booleanSlug] ) && $data[$booleanSlug] ){
+					$data[$booleanSlug] = true;
 				}
-				
-				if( isset( $data['HasAgreedToUkGiftAid'] ) && $data['HasAgreedToUkGiftAid'] ){
-					$data['HasAgreedToUkGiftAid'] = true;
+				else{
+					$data[$booleanSlug] = false;
 				}
-				
 			}
+			/*
+			*	THIS HAS TO BE REFACTORED TO BE ADDED THROUGH ACTION HOOKS
+			*/
+			
 			
 			// BASIC CUSTOMER INFO
 			$customerInfo = array(
@@ -165,6 +173,9 @@ class METEOR_STRIPE extends METEOR_BASE{
 			$chargeInfo['metadata'] = $this->addMetaData( $data, array( 
 				'FirstName', 
 				'LastName', 
+				'IsIntlEmailOptIn',
+				'IsIntlMailOptIn',
+				'IsIntlPhoneOptIn',
 			) );
 					
 			// CHARGE THE CARD TO STRIPE

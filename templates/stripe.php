@@ -187,7 +187,34 @@
 			'inline_label'	=> '*Please keep me informed about your work and how to best support you by phone'
 		),
 		
-		
+		'updates' => array(
+			'label'			=> 'Would you like to receive updates by',
+			'class'			=> 'form-field',
+			'fields_class'	=> 'fields fields-uk',
+			'fields'		=> array(
+				'email'	=> array(
+					'inline_label' 	=> 'Email',
+					'class'			=> 'form-field',
+					'type'			=> 'checkbox',
+					'name'			=> 'IsIntlEmailOptIn',
+					'value'			=> '1'
+				),
+				'mail'	=> array(
+					'inline_label' 	=> 'Post',
+					'class'			=> 'form-field',
+					'type'			=> 'checkbox',
+					'name'			=> 'IsIntlMailOptIn',
+					'value'			=> '1'
+				),
+				'phone'	=> array(
+					'inline_label' 	=> 'Phone',
+					'class'			=> 'form-field',
+					'type'			=> 'checkbox',
+					'name'			=> 'IsIntlPhoneOptIn',
+					'value'			=> '1'
+				),
+			)
+		),
 		
 		'submit'	=> array(
 			'type'	=> 'submit',
