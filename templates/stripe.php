@@ -209,6 +209,9 @@
 		width	: 100%;
 		padding	: 5px;
 	}
+	form[data-behaviour~=meteor-stripe-form] input[type=checkbox]{
+		width: 20px;
+	}
 	
 	form[data-behaviour~=meteor-stripe-form] .fields-cols-2{
 		display					: grid;
@@ -226,7 +229,7 @@
 	
 	form[data-behaviour~=meteor-stripe-form] .fields-amount{
 		display					: grid;
-		grid-template-columns	: 150px 100px;
+		grid-template-columns	: 150px 150px;
 		grid-gap				: 20px;
 	}
 	
