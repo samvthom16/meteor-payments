@@ -1,5 +1,89 @@
 (function ($) {
 	
+	$.fn.meteor_slides = function(){
+	
+		return this.each(function() {
+			
+			var $el 		= jQuery( this );
+				
+			function totalSlides(){
+				return parseInt( $el.find('.meteor-slide').length );
+			}
+			
+			function getCurrentSlide(){
+				return $el.find('.meteor-slide.active');
+			}
+			
+			function getNextSlide(){
+				var $currentSlide 		= getCurrentSlide(),
+					currentSlideNumber 	= parseInt( $currentSlide.data('slide') ),
+					nextSlideNumber 	= currentSlideNumber + 1;
+				
+				if( nextSlideNumber >= totalSlides() ){ nextSlideNumber = 0; }
+				
+				return $el.find( '[data-slide~=' + nextSlideNumber + ']' );
+			}
+			
+			function getPreviousSlide(){
+				var $currentSlide 		= getCurrentSlide(),
+					currentSlideNumber 	= parseInt( $currentSlide.data('slide') ),
+					prevSlideNumber 	= currentSlideNumber - 1;
+					
+				if( prevSlideNumber < 0 ){ prevSlideNumber = totalSlides() - 1; }	
+				
+				return $el.find( '[data-slide~=' + prevSlideNumber + ']' );
+			}
+			
+			function init(){
+				
+				$el.find('.meteor-slide').each( function( i, slide ){
+					
+					var $slide = jQuery( slide );
+					$slide.attr( 'data-slide', i );
+					
+				});
+			}
+			
+			function slideTransition( $currentSlide, $nextSlide ){
+				$currentSlide.removeClass('active');
+				$nextSlide.addClass('active');
+				
+				$([document.documentElement, document.body]).animate({
+					scrollTop: $el.offset().top - 100
+				}, 1000);
+			}
+			
+			$el.find('[data-behaviour~=meteor-slide-next]').click( function( ev ){
+				
+				ev.preventDefault();
+				
+				var $slide 		= getCurrentSlide(),
+					$nextSlide	= getNextSlide();
+				
+				slideTransition( $slide, $nextSlide );
+				
+			});
+			
+			$el.find('[data-behaviour~=meteor-slide-prev]').click( function( ev ){
+				
+				ev.preventDefault();
+				
+				var $slide 		= getCurrentSlide(),
+					$prevSlide	= getPreviousSlide();
+				
+				slideTransition( $slide, $prevSlide );
+				
+			});
+			
+			init();
+			
+			
+		});
+
+	};
+	
+	
+	
 	$.fn.meteor_stripe = function( options ){
 		
 		return this.each(function(){
@@ -123,6 +207,10 @@
 				
 			});
 			
+			
+			
+			
+			
 		});
 	};
 		
@@ -131,5 +219,7 @@
 jQuery(document).ready(function(){
 	
 	jQuery( 'form[data-behaviour~=meteor-stripe-form]' ).meteor_stripe();
+	
+	jQuery( 'form[data-behaviour~=meteor-slides]' ).meteor_slides();
 	
 });

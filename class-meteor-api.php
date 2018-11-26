@@ -152,8 +152,37 @@
 		
 		function form( $form ){
 			
-			foreach( $form as $field ){
-				$this->form_field( $field );
+			$i = 0;
+			
+			foreach( $form as $page ){
+				
+				$slide_class = 'meteor-slide';
+				if( !$i ){ $slide_class .= ' active'; }
+				
+				_e( "<div class='".$slide_class."'>" );
+				
+				foreach( $page as $form_field ){
+					$this->form_field( $form_field );
+				}
+				
+				_e( "<ul class='meteor-list meteor-list-inline'>" );
+				
+				// HIDE IN THE FIRST PAGE OF THE FORM
+				if( $i ){ _e( "<li><button data-behaviour='meteor-slide-prev'>Previous</button></li>" ); }
+				
+				// IN THE LAST FORM, THE TEXT SHOULD CHANGE TO SUBMIT
+				if( $i != count( $form ) - 1 ){
+					_e( "<li><button data-behaviour='meteor-slide-next'>Next</button></li>" );
+				}
+				else{
+					_e( "<li><button type='submit'>Submit</button></li>" );
+				}
+				
+				_e( "</ul>" );
+				
+				_e( "</div>" );
+				
+				$i++;
 			}
 		}
 		
@@ -171,7 +200,7 @@
 				
 				$uri = plugin_dir_url( __FILE__ );
 				
-				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.0.6', true);
+				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.0.7', true);
 				
 				wp_localize_script( 'meteor-api', 'meteor_settings', array(
 					'key'	=> $this->getStripeAPI()->getStripeKeys()['publishable']
