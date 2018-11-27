@@ -42,6 +42,17 @@
 				'name'			=> 'Recurring',
 				'value'			=> '1'
 			),
+			/*
+			'plan'	=> array(
+				'class'			=> 'form-field',
+				'fields'		=> array(
+					'one-time' => array(
+						'type'	=> 'radio'
+						'name'	=> 'Plan'
+						'label'	=> 'One Time'
+					)	
+				)
+			),
 			
 			/* NAME FIELD WITH INLINE FIELDS - FIRSTNAME AND LASTNAME */
 			'name'	=> array(
@@ -92,18 +103,16 @@
 						'class'			=> 'card-num'
 					),
 					'card-month'	=> array(
-						'type'			=> 'number',
-						'placeholder'	=> 'MM',
-						'size'			=> '2',
+						'type'			=> 'dropdown',
 						'class'			=> 'card-month',
-						'inline_label'	=> 'Month'
+						'inline_label'	=> 'Month',
+						'options'		=> METEOR_DATA::getInstance()->months(),
 					),
 					'card-year'	=> array(
-						'type'			=> 'number',
-						'placeholder'	=> 'YY',
-						'size'			=> '2',
+						'type'			=> 'dropdown',
 						'class'			=> 'card-year',
-						'inline_label'	=> 'Year'
+						'inline_label'	=> 'Year',
+						'options'		=> METEOR_DATA::getInstance()->years(),
 					),
 					'card-cvc'	=> array(
 						'type'			=> 'number',
@@ -287,7 +296,7 @@
 		display					: grid;
 		grid-template-areas		: 'number number number number'
 			'month year cvc blank';
-		grid-template-columns	: 70px 70px 100px 1fr;
+		grid-template-columns	: 90px 90px 100px 1fr;
 		grid-gap				: 20px;
 	}
 	

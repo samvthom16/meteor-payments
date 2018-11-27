@@ -85,6 +85,26 @@
 				*/
 				if( isset( $field['type'] ) ){
 					
+					switch( $field['type'] ){
+						case 'radio':
+							break;
+						
+						case 'checkbox':
+							include('templates/fields_checkbox.php');
+							break;
+							
+						case 'email':
+						case 'number':
+						case 'text':
+						case 'hidden':
+							include('templates/fields_input.php');
+							break;
+							
+						case 'dropdown':
+							include('templates/fields_select.php');
+							break;
+					}
+					/*
 					$tag = '';
 					
 					// FOR CHECKBOXES WRAP UP THE ELEMENTS TAGS WITH THE INLINE LABEL
@@ -143,7 +163,7 @@
 					}
 					
 					_e( $tag );
-					
+					*/
 				}
 			
 			_e("</div>");

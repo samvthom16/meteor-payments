@@ -252,11 +252,37 @@ class METEOR_DATA extends METEOR_BASE{
 	function currencies(){
 		
 		return array(
+			'GBP'	=> 'British Pounds',
 			'USD'	=> 'US Dollars',
+			'CHF'	=> 'Swiss Franc',
 			'EUR'	=> 'Euros',
-			'INR'	=> 'Indian Rupees'
+			'CAD'	=> 'Canadian Dollars',
 		);
 		
+	}
+	
+	function months(){
+		
+		return array(
+			'01'	=> '01',
+			'02'	=> '02',
+			'03'	=> '03',
+			'04'	=> '04',	
+			'05'	=> '05',
+			'06'	=> '06',
+			'07'	=> '07',
+			'08'	=> '08',
+			'09'	=> '09',
+			'10'	=> '10',
+			'11'	=> '11',
+			'12'	=> '12',
+		);
+	}
+	
+	function years(){
+		$current_year = date('Y');
+		$range = range($current_year, $current_year+20);
+		return array_combine($range, $range);
 	}
 	
 }
