@@ -24,14 +24,14 @@
 						'name'			=> 'Amount',
 						'placeholder'	=> 'Enter Amount',
 						'size'			=> '50'	,
-						'class'			=> 'fields',
+						'class'			=> 'fields field-required',
 					),
 					'currency'	=> array(
 						'type'			=> 'dropdown',
 						'name'			=> 'Currency',
 						'options'		=> METEOR_DATA::getInstance()->currencies(),
 						'inline_label'	=> 'Currency',
-						'class'			=> 'fields',
+						'class'			=> 'fields field-required',
 					)
 				)
 			),
@@ -65,21 +65,21 @@
 						'name'			=> 'FirstName',
 						'placeholder'	=> 'First Name',
 						'size'			=> '50',
-						'class'			=> 'fields',
+						'class'			=> 'fields field-required',
 					),
 					'lastname'	=> array(
 						'type'			=> 'text',
 						'name'			=> 'LastName',
 						'placeholder'	=> 'Last Name',
 						'size'			=> '50',
-						'class'			=> 'fields',
+						'class'			=> 'fields field-required',
 					)
 				)
 			),
 			
 			'email'	=> array(
 				'label'			=> 'Email',
-				'class'			=> 'form-field',
+				'class'			=> 'form-field field-required',
 				'type'			=> 'email',
 				'name'			=> 'Email',
 				'placeholder'	=> 'Email Address',

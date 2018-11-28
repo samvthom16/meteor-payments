@@ -45,6 +45,7 @@
 			}
 			
 			function slideTransition( $currentSlide, $nextSlide ){
+				
 				$currentSlide.removeClass('active');
 				$nextSlide.addClass('active');
 				
@@ -60,7 +61,11 @@
 				var $slide 		= getCurrentSlide(),
 					$nextSlide	= getNextSlide();
 				
-				slideTransition( $slide, $nextSlide );
+				$slide.trigger('meteor:beforeNextTransition');
+				
+				if( $slide.data( 'slide-disable' ) != '1' ){
+					slideTransition( $slide, $nextSlide );
+				}
 				
 			});
 			
@@ -91,6 +96,42 @@
 			var $form 	= $( this ),
 				$submit	= $form.find('[type~=submit]'),
 				$errors = $form.find('.payment-errors');
+			
+			
+			
+			$form.on('meteor:beforeNextTransition', function( ev ){
+				
+				var $slide = jQuery( ev.target ),
+					flag = formCheck( $slide );
+				
+				$slide.data('slide-disable', '1');
+				
+				$errors.hide();
+				
+				if( flag ){
+					$slide.data('slide-disable', '0');
+				}
+				else{
+					showError( "You have missed some required fields." ); 
+				}
+				
+			});
+			
+			function formCheck( $slide ) {
+				
+				var flag = true;
+				
+				var fields = $slide.find(".field-required").serializeArray();
+				
+				$.each( fields, function( i, field ){
+					if( !field.value ){ 
+						flag = false; 
+					}
+				});
+				
+				return flag;
+			}
+			
 			
 			// SET YOUR PUBLISHABLE KEY
 			Stripe.setPublishableKey( meteor_settings['key'] );
