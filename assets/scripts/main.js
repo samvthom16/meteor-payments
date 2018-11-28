@@ -206,8 +206,8 @@
 				return {
 					number		: $form.find('.card-num input[type=number]').val(),
 					cvc			: $form.find('.card-cvc input[type=number]').val(),
-					exp_month	: $form.find('.card-month input[type=number]').val(),
-					exp_year	: $form.find('.card-year input[type=number]').val()
+					exp_month	: $form.find('.card-month select').val(),
+					exp_year	: $form.find('.card-year select').val()
 				}
 			}
 			
@@ -236,8 +236,6 @@
 			}
 			
 			$form.submit( function(){
-				
-				
 				
 				showLoading();
 				

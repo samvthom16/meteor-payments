@@ -121,6 +121,7 @@ class METEOR_STRIPE extends METEOR_BASE{
 			
 			// ADD METADATA TO CUSTOMER INFO
 			$customerInfo['metadata'] = $this->addMetaData( $data, array( 
+				'SourceCode',
 				'FirstName', 
 				'LastName', 
 				'AddressLine1', 

@@ -220,7 +220,7 @@
 				
 				$uri = plugin_dir_url( __FILE__ );
 				
-				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.0.9', true);
+				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.1.0', true);
 				
 				wp_localize_script( 'meteor-api', 'meteor_settings', array(
 					'key'	=> $this->getStripeAPI()->getStripeKeys()['publishable']
@@ -238,7 +238,8 @@
 		function main_shortcode( $atts ){
 			
 			$atts = shortcode_atts( array(
-				'name' => 'Donation Form'
+				'name' 		=> 'Donation Form',
+				'source_id'	=> '00000'
 			), $atts, $this->getShortcode() );
 			
 			ob_start();

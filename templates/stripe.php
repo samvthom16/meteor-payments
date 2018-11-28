@@ -14,6 +14,11 @@
 				'name'			=> 'FormName',
 				'value'			=> $atts['name']
 			),
+			'source_id'	=> array(
+				'type'			=> 'hidden',
+				'name'			=> 'SourceCode',
+				'value'			=> $atts['source_id']
+			),
 			'amount'	=> array(
 				'label'			=> 'Donation Amount',
 				'class'			=> 'form-field',
