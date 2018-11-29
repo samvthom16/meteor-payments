@@ -20,7 +20,7 @@
 				'value'			=> $atts['source_id']
 			),
 			'amount'	=> array(
-				'label'			=> 'Donation Amount',
+				'label'			=> 'Donation Amount *',
 				'class'			=> 'form-field',
 				'fields_class'	=> 'fields fields-amount',
 				'fields' 	=> array(
@@ -61,7 +61,7 @@
 			
 			/* NAME FIELD WITH INLINE FIELDS - FIRSTNAME AND LASTNAME */
 			'name'	=> array(
-				'label'			=> 'Name',
+				'label'			=> 'Name *',
 				'class'			=> 'form-field cols-2',
 				'fields_class'	=> 'fields fields-cols-2',
 				'fields'	=> array(
@@ -83,7 +83,7 @@
 			),
 			
 			'email'	=> array(
-				'label'			=> 'Email',
+				'label'			=> 'Email *',
 				'class'			=> 'form-field field-required',
 				'type'			=> 'email',
 				'name'			=> 'Email',
@@ -91,6 +91,20 @@
 				'size'			=> '100'
 			),
 			
+			'email-updates' => array(
+				'label'			=> 'Yes, please keep me informed by email about your work, your breakthroughs, and how to best support you:',
+				'class'			=> 'form-field',
+				'fields_class'	=> 'fields fields-uk',
+				'fields'		=> array(
+					'email'	=> array(
+						'inline_label' 	=> 'Newsletter (bi-monthly)',
+						'class'			=> 'form-field',
+						'type'			=> 'checkbox',
+						'name'			=> 'IsIntlEmailOptIn',
+						'value'			=> '1'
+					),
+				)
+			),
 			
 		),
 		'card-page' => array(
@@ -98,7 +112,7 @@
 			* CARD DETAILS: CARD NUMBER, CVC, MONTH & YEAR
 			*/
 			'card'	=> array(
-				'label'			=> 'Card Details',
+				'label'			=> 'Card Details *',
 				'class'			=> 'form-field',
 				'fields_class'	=> 'fields fields-card',
 				'fields'		=> array(
@@ -131,7 +145,7 @@
 			* ADDRESS DETAILS: LINE 1 & 2, CITY, STATE, ZIP, COUNTRY
 			*/
 			'address'	=> array(
-				'label'			=> 'Address',
+				'label'			=> 'Address *',
 				'class'			=> 'form-field',
 				'fields_class'	=> 'fields fields-cols-2',
 				'fields'		=> array(
@@ -211,13 +225,6 @@
 				'class'			=> 'form-field',
 				'fields_class'	=> 'fields fields-uk',
 				'fields'		=> array(
-					'email'	=> array(
-						'inline_label' 	=> 'Email',
-						'class'			=> 'form-field',
-						'type'			=> 'checkbox',
-						'name'			=> 'IsIntlEmailOptIn',
-						'value'			=> '1'
-					),
 					'mail'	=> array(
 						'inline_label' 	=> 'Post',
 						'class'			=> 'form-field',
