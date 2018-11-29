@@ -2,23 +2,30 @@
 	
 	$form = array(
 		'basic-page' => array(
-			'api'	=> array(
-				'class'			=> 'form-field',
-				'type'			=> 'hidden',
-				'name'			=> 'API',
-				'value'			=> 'stripe'
+			/*
+			* HIDDEN FIELDS THAT NEEDS TO BE PASSED
+			*/
+			'hidden'	=> array(
+				'fields_class'	=> 'fields-hidden',
+				'fields' 	=> array(
+					'api'	=> array(
+						'type'		=> 'hidden',
+						'name'		=> 'API',
+						'value'		=> 'stripe'
+					),
+					'form_name'	=> array(
+						'type'		=> 'hidden',
+						'name'		=> 'FormName',
+						'value'		=> $atts['name']
+					),
+					'source_id'	=> array(
+						'type'			=> 'hidden',
+						'name'			=> 'SourceCode',
+						'value'			=> $atts['source_id']
+					),
+				)
 			),
-			'form_name'	=> array(
-				'class'			=> 'form-field',
-				'type'			=> 'hidden',
-				'name'			=> 'FormName',
-				'value'			=> $atts['name']
-			),
-			'source_id'	=> array(
-				'type'			=> 'hidden',
-				'name'			=> 'SourceCode',
-				'value'			=> $atts['source_id']
-			),
+			
 			'amount'	=> array(
 				'label'			=> 'Donation Amount *',
 				'class'			=> 'form-field',
@@ -61,9 +68,9 @@
 			
 			/* NAME FIELD WITH INLINE FIELDS - FIRSTNAME AND LASTNAME */
 			'name'	=> array(
-				'label'			=> 'Name *',
-				'class'			=> 'form-field cols-2',
-				'fields_class'	=> 'fields fields-cols-2',
+				'label'				=> 'Name *',
+				'container_class'	=> 'form-field',
+				'fields_class'		=> 'fields fields-cols-2',
 				'fields'	=> array(
 					'firstname'	=> array(
 						'type'			=> 'text',
@@ -83,18 +90,19 @@
 			),
 			
 			'email'	=> array(
-				'label'			=> 'Email *',
-				'class'			=> 'form-field field-required',
-				'type'			=> 'email',
-				'name'			=> 'Email',
-				'placeholder'	=> 'Email Address',
-				'size'			=> '100'
+				'label'				=> 'Email *',
+				'container_class'	=> 'form-field',
+				'class'				=> 'form-field field-required',
+				'type'				=> 'email',
+				'name'				=> 'Email',
+				'placeholder'		=> 'Email Address',
+				'size'				=> '100'
 			),
 			
 			'email-updates' => array(
-				'label'			=> 'Yes, please keep me informed by email about your work, your breakthroughs, and how to best support you:',
-				'class'			=> 'form-field',
-				'fields_class'	=> 'fields fields-uk',
+				'label'				=> 'Yes, please keep me informed by email about your work, your breakthroughs, and how to best support you:',
+				'container_class'	=> 'form-field',
+				'fields_class'		=> 'fields fields-uk',
 				'fields'		=> array(
 					'email'	=> array(
 						'inline_label' 	=> 'Newsletter (bi-monthly)',
@@ -112,32 +120,36 @@
 			* CARD DETAILS: CARD NUMBER, CVC, MONTH & YEAR
 			*/
 			'card'	=> array(
-				'label'			=> 'Card Details *',
-				'class'			=> 'form-field',
-				'fields_class'	=> 'fields fields-card',
+				'label'				=> 'Card Details *',
+				'container_class'	=> 'form-field',
+				'fields_class'		=> 'fields fields-card',
 				'fields'		=> array(
 					'card-num'	=> array(
-						'type'			=> 'number',
-						'placeholder'	=> 'Card Number',
-						'class'			=> 'card-num'
+						'type'				=> 'number',
+						'placeholder'		=> 'Card Number',
+						'container_class'	=> 'card-num',
+						'class'				=> 'field-required'
 					),
 					'card-month'	=> array(
-						'type'			=> 'dropdown',
-						'class'			=> 'card-month',
-						'inline_label'	=> 'Month',
-						'options'		=> METEOR_DATA::getInstance()->months(),
+						'type'				=> 'dropdown',
+						'container_class'	=> 'card-month',
+						'class'				=> 'field-required',
+						'inline_label'		=> 'Month',
+						'options'			=> METEOR_DATA::getInstance()->months(),
 					),
 					'card-year'	=> array(
-						'type'			=> 'dropdown',
-						'class'			=> 'card-year',
-						'inline_label'	=> 'Year',
-						'options'		=> METEOR_DATA::getInstance()->years(),
+						'type'				=> 'dropdown',
+						'container_class'	=> 'card-year',
+						'class'				=> 'field-required',
+						'inline_label'		=> 'Year',
+						'options'			=> METEOR_DATA::getInstance()->years(),
 					),
 					'card-cvc'	=> array(
-						'type'			=> 'number',
-						'placeholder'	=> 'CVC',
-						'class'			=> 'card-cvc',
-						'inline_label'	=> 'Security Code'
+						'type'				=> 'number',
+						'container_class'	=> 'card-cvc',
+						'placeholder'		=> 'CVC',
+						'class'				=> 'field-required',
+						'inline_label'		=> 'Security Code'
 					)
 				)
 			),
@@ -145,53 +157,53 @@
 			* ADDRESS DETAILS: LINE 1 & 2, CITY, STATE, ZIP, COUNTRY
 			*/
 			'address'	=> array(
-				'label'			=> 'Address *',
-				'class'			=> 'form-field',
-				'fields_class'	=> 'fields fields-cols-2',
+				'label'				=> 'Address *',
+				'container_class'	=> 'form-field',
+				'fields_class'		=> 'fields fields-cols-2',
 				'fields'		=> array(
 					'address-line1'	=> array(
 						'type'			=> 'text',
 						'placeholder'	=> 'Street Address',
-						'class'			=> 'addr-line1',
+						'class'			=> 'addr-line1 field-required',
 						'name'			=> 'AddressLine1'
 					),
 					'address-line2'	=> array(
 						'type'			=> 'text',
 						'placeholder'	=> 'Address Line 2',
-						'class'			=> 'addr-line2',
+						'class'			=> 'addr-line2 field-required',
 						'name'			=> 'AddressLine2'
 					),
 					'address-city'	=> array(
 						'type'			=> 'text',
 						'placeholder'	=> 'City',
-						'class'			=> 'addr-city',
+						'class'			=> 'addr-city field-required',
 						'name'			=> 'AddressCity'
 					),
 					'address-state'	=> array(
 						'type'			=> 'text',
 						'placeholder'	=> 'State / Province / Region',
-						'class'			=> 'addr-state',
+						'class'			=> 'addr-state field-required',
 						'name'			=> 'AddressState'
 					),
 					'address-zip'	=> array(
 						'type'			=> 'text',
 						'placeholder'	=> 'Postal Code / Zip',
-						'class'			=> 'addr-zip',
+						'class'			=> 'addr-zip field-required',
 						'name'			=> 'AddressZip'
 					),
 					'address-country' => array(
 						'type'			=> 'dropdown',
 						'name'			=> 'AddressCountry',
-						'class'			=> 'addr-country',
+						'class'			=> 'addr-country field-required',
 						'options'		=> METEOR_DATA::getInstance()->countries()
 					),
 				)
 			),
 			
 			'specificUK' => array(
-				'label'			=> 'Only for UK residents',
-				'class'			=> 'form-field',
-				'fields_class'	=> 'fields fields-uk',
+				'label'				=> 'Only for UK residents',
+				'container_class'	=> 'form-field',
+				'fields_class'		=> 'fields fields-uk',
 				'fields'		=> array(
 					'readUK'	=> array(
 						'inline_label' 	=> 'Read UK Gift Aid Agreement',
@@ -211,19 +223,19 @@
 			),
 			
 			'phone'	=> array(
-				'label'			=> 'Phone',
-				'class'			=> 'form-field',
-				'type'			=> 'text',
-				'name'			=> 'Phone',
-				'placeholder'	=> 'Phone Number',
-				'size'			=> '100',
-				'inline_label'	=> '*Please keep me informed about your work and how to best support you by phone'
+				'label'				=> 'Phone',
+				'container_class'	=> 'form-field',
+				'type'				=> 'text',
+				'name'				=> 'Phone',
+				'placeholder'		=> 'Phone Number',
+				'size'				=> '100',
+				'inline_label'		=> '*Please keep me informed about your work and how to best support you by phone'
 			),
 			
 			'updates' => array(
-				'label'			=> 'Would you like to receive updates by',
-				'class'			=> 'form-field',
-				'fields_class'	=> 'fields fields-uk',
+				'label'				=> 'Would you like to receive updates by',
+				'container_class'	=> 'form-field',
+				'fields_class'		=> 'fields fields-uk',
 				'fields'		=> array(
 					'mail'	=> array(
 						'inline_label' 	=> 'Post',

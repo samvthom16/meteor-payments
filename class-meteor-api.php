@@ -59,8 +59,10 @@
 		function form_field( $field ){
 			
 			$field_class = isset( $field['class'] ) ? $field['class'] : '';
-	
-			_e("<div class='".$field_class."'>");
+			
+			$container_class = isset( $field['container_class'] ) ? $field['container_class'] : '';
+			
+			_e("<div class='$container_class'>");
 				
 				// DISPLAY THE FIELD LABEL
 				if( isset( $field['label'] ) ){ _e( "<label>".$field['label']."</label>" ); }
@@ -104,66 +106,7 @@
 							include('templates/fields_select.php');
 							break;
 					}
-					/*
-					$tag = '';
 					
-					// FOR CHECKBOXES WRAP UP THE ELEMENTS TAGS WITH THE INLINE LABEL
-					if( in_array( $field['type'], array( 'checkbox' ) ) && isset( $field['inline_label'] ) ){
-						$tag .= "<label class='inline-label'>";
-					}
-					
-					// TAG BEGIN
-					if( in_array( $field['type'], array( 'email', 'number', 'text', 'checkbox', 'hidden' ) ) ){
-						$tag .= "<input type='".$field['type']."'";
-					}
-					elseif( $field['type'] == 'dropdown' ){
-						$tag .= "<select";
-					}
-					elseif( $field['type'] == 'submit' ){
-						$tag .= "<button type='submit'";
-					}
-					
-					foreach( $field as $attr => $val ){
-						if( in_array( $attr, array( 'placeholder', 'size', 'class', 'name', 'value') ) ){
-							$tag .= " $attr='$val'";
-						}
-					}
-					
-					// CLOSE THE INPUT TAG
-					if( in_array( $field['type'], array( 'email', 'number', 'text', 'checkbox', 'hidden' ) ) ){
-						$tag .= " />";
-					}
-					elseif( $field['type'] == 'dropdown' ){
-						$tag .= ">";
-						if( isset( $field['options'] ) ){
-							foreach( $field['options'] as $opt_val => $opt_label ){
-								$tag .= "<option value='".$opt_val."'>".$opt_label."</option>";
-							}
-						}
-						$tag .= "</select>";
-					}
-					
-					if( in_array( $field['type'], array( 'submit', 'button' ) ) ){
-						
-						$tag .= ">";
-						
-						if( isset( $field['html'] ) ){
-							$tag .= $field['html'];
-						}
-						
-						$tag .= "</button>";
-					}
-					
-						
-					if( in_array( $field['type'], array( 'checkbox' ) ) && isset( $field['inline_label'] ) ){
-						$tag .= "&nbsp;".$field['inline_label']."</label>";
-					}
-					elseif( isset( $field['inline_label'] ) ){
-						$tag .= "<label class='inline-label'>".$field['inline_label']."</label>";
-					}
-					
-					_e( $tag );
-					*/
 				}
 			
 			_e("</div>");
@@ -220,7 +163,7 @@
 				
 				$uri = plugin_dir_url( __FILE__ );
 				
-				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.1.0', true);
+				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.1.1', true);
 				
 				wp_localize_script( 'meteor-api', 'meteor_settings', array(
 					'key'	=> $this->getStripeAPI()->getStripeKeys()['publishable']

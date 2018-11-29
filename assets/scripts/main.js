@@ -6,14 +6,17 @@
 			
 			var $el 		= jQuery( this );
 				
+			// GET THE TOTAL NUMBER OF SLIDES
 			function totalSlides(){
 				return parseInt( $el.find('.meteor-slide').length );
 			}
 			
+			// GET CURRENT SLIDE IN THE LIST OF SLIDES THAT IS ACTIVE
 			function getCurrentSlide(){
 				return $el.find('.meteor-slide.active');
 			}
 			
+			// FIND THE NEXT SLIDE TO THE ONE THAT IS CURRENTLY ACTIVE
 			function getNextSlide(){
 				var $currentSlide 		= getCurrentSlide(),
 					currentSlideNumber 	= parseInt( $currentSlide.data('slide') ),
@@ -24,6 +27,7 @@
 				return $el.find( '[data-slide~=' + nextSlideNumber + ']' );
 			}
 			
+			// FIND THE PREVIOUS SLIDE TO THE ONE THAT IS CURRENTLY ACTIVE
 			function getPreviousSlide(){
 				var $currentSlide 		= getCurrentSlide(),
 					currentSlideNumber 	= parseInt( $currentSlide.data('slide') ),
@@ -34,6 +38,7 @@
 				return $el.find( '[data-slide~=' + prevSlideNumber + ']' );
 			}
 			
+			// INITIALIZE
 			function init(){
 				
 				$el.find('.meteor-slide').each( function( i, slide ){
@@ -44,6 +49,10 @@
 				});
 			}
 			
+			/*
+			*	TRANSITION OF SLIDE FROM CURRENT TO NEXT
+			* 	SCROLL THE BODY TO THE TOP OF THE SLIDE
+			*/ 
 			function slideTransition( $currentSlide, $nextSlide ){
 				
 				$currentSlide.removeClass('active');
@@ -106,25 +115,23 @@
 				
 				$slide.data('slide-disable', '1');
 				
-				$errors.hide();
-				
 				if( flag ){
 					$slide.data('slide-disable', '0');
-				}
-				else{
-					showError( "You have missed some required fields." ); 
 				}
 				
 			});
 			
-			function formCheck( $slide ) {
+			function formCheck( $el ) {
 				
-				var flag = true;
+				// HIDE ERRORS FIELD TO SHOW ONLY IF THERE IS AN ERROR MESSAGE
+				$errors.hide();
 				
-				var fields = $slide.find(".field-required").serializeArray();
+				var flag 	= true,
+					fields 	= $el.find(".field-required").serializeArray();
 				
 				$.each( fields, function( i, field ){
-					if( !field.value ){ 
+					if( !field.value ){
+						showError( "You have missed some required fields." ); 		
 						flag = false; 
 					}
 				});
@@ -228,19 +235,32 @@
 									
 						}
 						
+						// HIDE THE FIELDS AFTER FORM HAS BEEN PROCESSED
+						$form.find('.meteor-slide').hide();
+						
 						stopLoading();
+						
+						// SCROLL THE DOCUMENT TO THE TOP OF THE FORM AFTER THE SLIDES HAVE BEEN HIDDEN
+						$([document.documentElement, document.body]).animate({
+							scrollTop: $form.offset().top - 100
+						}, 1000);
 						
 					}
 				});
 				
 			}
 			
-			$form.submit( function(){
+			$form.submit( function( ev ){
 				
-				showLoading();
+				var	flag 	= formCheck( $form );
 				
-				// create single-use token to charge the user
-				Stripe.createToken( getStripeParams(), stripeResponse );
+				if( flag ){
+					
+					showLoading();
+				
+					// create single-use token to charge the user
+					Stripe.createToken( getStripeParams(), stripeResponse );
+				}
 				
 				return false;
 				
