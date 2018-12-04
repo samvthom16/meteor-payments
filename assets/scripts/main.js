@@ -273,6 +273,74 @@
 		});
 	};
 		
+		
+	$.fn.meteor_amount = function(){
+		
+		return this.each(function(){
+			
+			var $el 		= $( this ),
+				$form		= $el.closest('form'),
+				$label		= $el.find('.label-amount'),
+				$choices	= $el.find('input[name=AmountChoices]'),
+				$customAmt	= $el.find('input[name=AmountCustom]'),
+				$currency	= $el.find('[name=Currency]'),
+				$amount		= $el.find('input[name=Amount]');
+			
+			function getAmount(){
+				
+				var amount 			= 0,
+					choice_value 	= $el.find('input[name=AmountChoices]:checked').val();
+					
+				amount = parseInt( choice_value );
+				
+				if( choice_value == 'Other' ){
+					amount = parseInt( $customAmt.val() );
+				}
+				
+				if( !Number.isInteger( amount ) ){
+					amount = 0;
+				}
+				
+				return amount;
+				
+			}
+			
+			
+			
+			function formChanged(){
+				
+				var choice_value 	= $el.find('input[name=AmountChoices]:checked').val(),
+					amount 			= getAmount(),
+					currency		= $currency.val();
+				
+				// SHOW CUSTOM AMOUNT FIELD BASED ON THE AMOUNT CHOICES
+				if( choice_value == 'Other' ){
+					$el.find('.form-custom-amount').show();
+				}
+				else{
+					$el.find('.form-custom-amount').hide();
+				}
+				
+				// UPDATE AMOUNT LABEL
+				$label.html( amount + ' ' + currency );
+					
+				// UPDATE MAIN AMOUNT IN THE HIDDEN FIELD
+				$amount.val( amount );
+				
+			}
+			
+			$form.change( function(){
+				
+				formChanged();
+				
+			});
+			
+			formChanged();
+			
+		});
+	};
+	
+	
 }(jQuery));
 
 jQuery(document).ready(function(){
@@ -280,5 +348,7 @@ jQuery(document).ready(function(){
 	jQuery( 'form[data-behaviour~=meteor-stripe-form]' ).meteor_stripe();
 	
 	jQuery( 'form[data-behaviour~=meteor-slides]' ).meteor_slides();
+	
+	jQuery( 'form[data-behaviour~=meteor-stripe-form] .fields-amount' ).meteor_amount();
 	
 });

@@ -1,5 +1,13 @@
 <?php
 	
+	add_filter( 'meteor_data_currencies', function( $currencies ){
+		foreach( $currencies as $slug => $value ){
+			$currencies[ $slug ] = $slug;
+		}
+		return $currencies;
+	});
+	
+	
 	$form = array(
 		'basic-page' => array(
 			/*
@@ -27,24 +35,50 @@
 			),
 			
 			'amount'	=> array(
-				'label'			=> 'Donation Amount *',
-				'class'			=> 'form-field',
+				'container_class'	=> 'form-field',
 				'fields_class'	=> 'fields fields-amount',
 				'fields' 	=> array(
-					'amount'	=> array(
+					'currency'	=> array(
+						'type'				=> 'dropdown',
+						'name'				=> 'Currency',
+						'options'			=> METEOR_DATA::getInstance()->currencies(),
+						'label'				=> 'Currency *',
+						'container_class'	=> 'form-field',
+						'class'				=> 'field-required',
+					),
+					'amount_choices' => array(
+						'label'				=> 'Donation Amount *',
+						'container_class'	=> 'form-field',
+						'type'				=> 'radio',
+						'name'				=> 'AmountChoices',
+						'options'			=> array(
+							'35'	=> '35',
+							'50'	=> '50',
+							'75'	=> '75',
+							'100'	=> '100',
+							'250'	=> '250',
+							'Other'	=> 'Other'
+						),
+						'default'	=> '35'
+					),
+					'custom-amount'	=> array(
+						'container_class'	=> 'form-field form-custom-amount',
 						'type'			=> 'number',
-						'name'			=> 'Amount',
+						'name'			=> 'AmountCustom',
 						'placeholder'	=> 'Enter Amount',
 						'size'			=> '50'	,
 						'class'			=> 'fields field-required',
 					),
-					'currency'	=> array(
-						'type'			=> 'dropdown',
-						'name'			=> 'Currency',
-						'options'		=> METEOR_DATA::getInstance()->currencies(),
-						'inline_label'	=> 'Currency',
-						'class'			=> 'fields field-required',
-					)
+					'amount'	=> array(
+						'type'	=> 'hidden',
+						'name'	=> 'Amount',
+						'value'	=> 0
+					),
+					'label-amount'	=> array(
+						'container_class'	=> 'form-field',
+						'class'				=> 'label-amount',
+						'type'	=> 'label'
+					),
 				)
 			),
 			'recurring'	=> array(
@@ -306,6 +340,10 @@
 		width	: 100%;
 		padding	: 5px;
 	}
+	form[data-behaviour~=meteor-stripe-form] input[type=radio]{
+		width: auto;
+	}
+	
 	form[data-behaviour~=meteor-stripe-form] input[type=checkbox]{
 		width: 20px;
 	}
@@ -324,11 +362,13 @@
 		grid-gap				: 20px;
 	}
 	
+	/*
 	form[data-behaviour~=meteor-stripe-form] .fields-amount{
 		display					: grid;
 		grid-template-columns	: 150px 150px;
 		grid-gap				: 20px;
 	}
+	*/
 	
 	form[data-behaviour~=meteor-stripe-form] .fields-uk .form-field{
 		margin-bottom: 0;
@@ -359,5 +399,47 @@
 	form[data-behaviour~=meteor-stripe-form] .meteor-list li{
 		display: inline-block;
 		margin-right: 20px;
+	}
+	
+	/*
+	form[data-behaviour~=meteor-stripe-form] .meteor-radio li input[type=radio]{
+		position: absolute;
+		opacity: 0;
+		
+	}
+	*/
+	form[data-behaviour~=meteor-stripe-form] .meteor-radio li{
+		position: relative;
+	}
+	
+	form[data-behaviour~=meteor-stripe-form] .meteor-radio li input[type=radio]{
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+	
+	form[data-behaviour~=meteor-stripe-form] .meteor-radio li label{
+		display: inline-block;
+		max-width: 100%;
+		background: #d7d7d7;
+		font-weight: 700;
+		padding: 0.35em 0.75em;
+		border-radius: 0.25em;
+		font-size: 1.1em;
+		vertical-align: bottom;
+		
+	}
+	
+	form[data-behaviour~=meteor-stripe-form] .meteor-radio li input[type=radio]:checked+label{
+		background: #ac1d23;
+		color: #fff;
+	}
+	
+	form[data-behaviour~=meteor-stripe-form] .label-amount{
+		color: #060;
 	}
 </style>

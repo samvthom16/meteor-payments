@@ -251,13 +251,15 @@ class METEOR_DATA extends METEOR_BASE{
 	
 	function currencies(){
 		
-		return array(
+		$currencies = array(
 			'GBP'	=> 'British Pounds',
 			'USD'	=> 'US Dollars',
 			'CHF'	=> 'Swiss Franc',
 			'EUR'	=> 'Euros',
 			'CAD'	=> 'Canadian Dollars',
 		);
+		
+		return apply_filters( 'meteor_data_currencies', $currencies );
 		
 	}
 	

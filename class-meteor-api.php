@@ -89,8 +89,12 @@
 					
 					switch( $field['type'] ){
 						case 'radio':
+							include('templates/fields_radio.php');
 							break;
 						
+						case 'label':
+							include('templates/fields_label.php');
+							break;
 						case 'checkbox':
 							include('templates/fields_checkbox.php');
 							break;
@@ -163,7 +167,7 @@
 				
 				$uri = plugin_dir_url( __FILE__ );
 				
-				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.1.1', true);
+				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.1.2', true);
 				
 				wp_localize_script( 'meteor-api', 'meteor_settings', array(
 					'key'	=> $this->getStripeAPI()->getStripeKeys()['publishable']
