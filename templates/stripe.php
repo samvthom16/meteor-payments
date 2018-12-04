@@ -67,7 +67,7 @@
 						'name'			=> 'AmountCustom',
 						'placeholder'	=> 'Enter Amount',
 						'size'			=> '50'	,
-						'class'			=> 'fields field-required',
+						'class'			=> 'fields',
 					),
 					'amount'	=> array(
 						'type'	=> 'hidden',
@@ -369,6 +369,12 @@
 		grid-gap				: 20px;
 	}
 	*/
+	
+	form[data-behaviour~=meteor-stripe-form] .fields-amount select{
+		max-width: 200px;
+		display: block;
+	}
+	
 	
 	form[data-behaviour~=meteor-stripe-form] .fields-uk .form-field{
 		margin-bottom: 0;
