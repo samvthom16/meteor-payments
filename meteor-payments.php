@@ -16,7 +16,8 @@
 		'class-meteor-base.php',
 		'class-meteor-api.php',
 		'class-meteor-stripe.php',
-		'class-meteor-data.php'
+		'class-meteor-data.php',
+		'class-meteor-admin.php'
 	);
 
 	foreach( $inc_files as $inc_file ){

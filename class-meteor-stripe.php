@@ -17,8 +17,8 @@ class METEOR_STRIPE extends METEOR_BASE{
 	function getStripeKeys(){
 			
 		return array(
-			"secret"      => "sk_test_IYHIHIPQDGqNDUwZdCVj31wO",
-			"publishable" => "pk_test_h38rqoEGEDZvy9qb1LtgZy5S"	
+			"secret"      => get_option('stripeSecret'),
+			"publishable" => get_option('stripePublishable')	
 					
 		);
 	}
