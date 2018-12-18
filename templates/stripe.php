@@ -191,43 +191,45 @@
 			* ADDRESS DETAILS: LINE 1 & 2, CITY, STATE, ZIP, COUNTRY
 			*/
 			'address'	=> array(
-				'label'				=> 'Address *',
+				'label'				=> 'Address',
 				'container_class'	=> 'form-field',
 				'fields_class'		=> 'fields fields-cols-2',
 				'fields'		=> array(
 					'address-line1'	=> array(
 						'type'			=> 'text',
 						'placeholder'	=> 'Street Address',
-						'class'			=> 'addr-line1 field-required',
+						'class'			=> 'addr-line1',
 						'name'			=> 'AddressLine1'
 					),
 					'address-line2'	=> array(
 						'type'			=> 'text',
 						'placeholder'	=> 'Address Line 2',
-						'class'			=> 'addr-line2 field-required',
+						'class'			=> 'addr-line2',
 						'name'			=> 'AddressLine2'
 					),
 					'address-city'	=> array(
 						'type'			=> 'text',
 						'placeholder'	=> 'City',
-						'class'			=> 'addr-city field-required',
+						'class'			=> 'addr-city',
 						'name'			=> 'AddressCity'
 					),
 					'address-state'	=> array(
 						'type'			=> 'text',
 						'placeholder'	=> 'State / Province / Region',
-						'class'			=> 'addr-state field-required',
+						'class'			=> 'addr-state',
 						'name'			=> 'AddressState'
 					),
 					'address-zip'	=> array(
 						'type'			=> 'text',
 						'placeholder'	=> 'Postal Code / Zip',
-						'class'			=> 'addr-zip field-required',
+						'inline_label' 	=> 'Postal Code / Zip',
+						'class'			=> 'addr-zip',
 						'name'			=> 'AddressZip'
 					),
 					'address-country' => array(
 						'type'			=> 'dropdown',
 						'name'			=> 'AddressCountry',
+						'inline_label' 	=> 'Country *',
 						'class'			=> 'addr-country field-required',
 						'options'		=> METEOR_DATA::getInstance()->countries()
 					),
