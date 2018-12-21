@@ -60,9 +60,23 @@
 			
 			$field_class = isset( $field['class'] ) ? $field['class'] : '';
 			
-			$container_class = isset( $field['container_class'] ) ? $field['container_class'] : '';
+			// ADD ATTRIBUTES TO THE FORM FIELD
+			$atts = '';
+			$atts_array = array(
+				'class'				=> 'container_class',
+				'data-behaviour'	=> 'behaviour',
+				'data-state'		=> 'state'
+			);
+			foreach( $atts_array as $atts_key => $atts_value ){
+				
+				$value = isset( $field[$atts_value] ) ? $field[$atts_value] : '';
+				
+				if( $value ){
+					$atts .= " ".$atts_key."='".$value."'";
+				}
+			}
 			
-			_e("<div class='$container_class'>");
+			_e("<div $atts>");
 				
 				// DISPLAY THE FIELD LABEL
 				if( isset( $field['label'] ) ){ _e( "<label>".$field['label']."</label>" ); }
@@ -167,7 +181,7 @@
 				
 				$uri = plugin_dir_url( __FILE__ );
 				
-				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.1.2', true);
+				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.1.4', true);
 				
 				wp_localize_script( 'meteor-api', 'meteor_settings', array(
 					'key'	=> $this->getStripeAPI()->getStripeKeys()['publishable']

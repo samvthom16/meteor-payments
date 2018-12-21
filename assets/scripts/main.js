@@ -341,6 +341,45 @@
 	};
 	
 	
+	$.fn.meteor_conditional_display = function(){
+		
+		return this.each(function(){
+			
+			var $el 		= $( this ),
+				$form		= $el.closest('form'),
+				state		= $el.attr('data-state');
+				
+			function checkState(){
+				
+				// FORM NAME AND VALUE ARE SEPERATED BY =
+				var items = state.split('=');
+				
+				if( items.length > 1 ){
+					
+					var $field = $form.find('[name='+items[0]+']');
+					
+					if( $field.val() == items[1] ){
+						$el.show();
+					}
+					else{
+						$el.hide();
+					}
+					
+					
+				}
+				
+			}
+			
+			$form.change( function(){
+				checkState();
+			});
+			
+			checkState();
+			
+		});
+		
+	};
+	
 }(jQuery));
 
 jQuery(document).ready(function(){
@@ -350,5 +389,7 @@ jQuery(document).ready(function(){
 	jQuery( 'form[data-behaviour~=meteor-slides]' ).meteor_slides();
 	
 	jQuery( 'form[data-behaviour~=meteor-stripe-form] .fields-amount' ).meteor_amount();
+	
+	jQuery( 'form[data-behaviour~=meteor-stripe-form] [data-behaviour~=conditional-display]' ).meteor_conditional_display();
 	
 });

@@ -240,6 +240,8 @@
 				'label'				=> 'Only for UK residents',
 				'container_class'	=> 'form-field',
 				'fields_class'		=> 'fields fields-uk',
+				'behaviour'			=> 'conditional-display',
+				'state'				=> 'AddressCountry=GB',
 				'fields'		=> array(
 					'readUK'	=> array(
 						'inline_label' 	=> 'Read UK Gift Aid Agreement',
