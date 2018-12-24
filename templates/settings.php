@@ -5,13 +5,13 @@
 			'label'		=> 'Stripe Settings',
 			'tab'		=> plugin_dir_path(__FILE__).'settings-stripe.php'
 		),
-		/*
-		'import'	=> array(
-			'label'		=> 'Import',
-			'action'	=> 'import',
-			'tab'		=> plugin_dir_path(__FILE__).'settings-import.php'
+		
+		'labels'	=> array(
+			'label'		=> 'Update Labels',
+			'action'	=> 'labels',
+			'tab'		=> plugin_dir_path(__FILE__).'settings-labels.php'
 		),
-		*/
+		
 	);
 	
 	$screens = apply_filters( 'meteor_admin_settings_screens', $screens );

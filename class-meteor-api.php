@@ -8,8 +8,33 @@
 		
 		var $stripe;
 		
+		var $labels;
+		
+		var $labels_db;
+		
 		function __construct(){
 			
+			/*
+			* DEFAULT LIST OF LABELS THAT CAN BE UPDATED FROM THE BACKEND
+			*/
+			$this->setLabels( array(
+				'recurring'			=> 'Pay this amount monthly',
+				'email-updates'		=> 'Yes, please keep me informed by email about your work, your breakthroughs, and how to best support you:',
+				'specific-UK'		=> 'Only for UK residents',
+				'read-UK'			=> 'Read UK Gift Aid Agreement',
+				'agreed-UK'			=> 'Has Agreed To Uk Gift Aid',
+				'phone'				=> '*Please keep me informed about your work and how to best support you by phone',
+				'updates'			=> 'Would you like to receive updates by'
+			) );
+			// GET THE CUSTOMISED LABELS FROM THE DB
+			$labels_db = get_option('meteor_labels');
+			if( !$labels_db ){
+				$labels_db = array();
+			}
+			$this->setLabelsDB( $labels_db );
+			
+			
+			// setting the shortcode
 			$this->setShortcode( 'meteor_api' );
 			
 			add_shortcode( $this->getShortcode(), array( $this, 'main_shortcode' ), 100 );
@@ -32,7 +57,24 @@
 		
 		function getStripeAPI(){ return $this->stripe; }
 		function setStripeAPI( $stripe ){ $this->stripe = $stripe; }
+		
+		function getLabelsDB(){ return $this->labels_db; }
+		function setLabelsDB( $labels_db ){ $this->labels_db = $labels_db; }
+		
+		function setLabels( $labels ){ $this->labels = $labels;}
+		function getLabels(){ return $this->labels; }
 		/* GETTER AND SETTER FUNCTIONS */
+		
+		// GET ONE LABEL FROM THE CUSTOMISED AND DEFAULT LIST
+		function get_label( $key ){
+			
+			$labels_db = $this->getLabelsDB();
+			$labels = $this->getLabels();
+			
+			return isset( $labels_db[$key] ) ? $labels_db[$key] : ( isset( $labels[$key] ) ? $labels[$key] : ''  );
+			
+			
+		}
 		
 		function ajaxProcessForm(){
 			
@@ -233,6 +275,8 @@
 			}
 			return $found;
 		}
+		
+		
 		
 	}
 	

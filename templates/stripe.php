@@ -82,7 +82,7 @@
 				)
 			),
 			'recurring'	=> array(
-				'inline_label' 	=> 'Pay this amount monthly',
+				'inline_label' 	=> $this->get_label( 'recurring' ),
 				'class'			=> 'form-field',
 				'type'			=> 'checkbox',
 				'name'			=> 'Recurring',
@@ -134,7 +134,7 @@
 			),
 			
 			'email-updates' => array(
-				'label'				=> 'Yes, please keep me informed by email about your work, your breakthroughs, and how to best support you:',
+				'label'				=> $this->get_label( 'email-updates' ),
 				'container_class'	=> 'form-field',
 				'fields_class'		=> 'fields fields-uk',
 				'fields'		=> array(
@@ -237,21 +237,21 @@
 			),
 			
 			'specificUK' => array(
-				'label'				=> 'Only for UK residents',
+				'label'				=> $this->get_label( 'specific-UK' ),
 				'container_class'	=> 'form-field',
 				'fields_class'		=> 'fields fields-uk',
 				'behaviour'			=> 'conditional-display',
 				'state'				=> 'AddressCountry=GB',
 				'fields'		=> array(
 					'readUK'	=> array(
-						'inline_label' 	=> 'Read UK Gift Aid Agreement',
+						'inline_label' 	=> $this->get_label( 'read-UK' ),
 						'class'			=> 'form-field',
 						'type'			=> 'checkbox',
 						'name'			=> 'ReadUkGiftAidAgreement',
 						'value'			=> '1'
 					),
 					'agreedUK'	=> array(
-						'inline_label' 	=> 'Has Agreed To Uk Gift Aid',
+						'inline_label' 	=> $this->get_label( 'agreed-UK' ),
 						'class'			=> 'form-field',
 						'type'			=> 'checkbox',
 						'name'			=> 'HasAgreedToUkGiftAid',
@@ -267,11 +267,11 @@
 				'name'				=> 'Phone',
 				'placeholder'		=> 'Phone Number',
 				'size'				=> '100',
-				'inline_label'		=> '*Please keep me informed about your work and how to best support you by phone'
+				'inline_label'		=> $this->get_label( 'phone' )
 			),
 			
 			'updates' => array(
-				'label'				=> 'Would you like to receive updates by',
+				'label'				=> $this->get_label( 'updates' ),
 				'container_class'	=> 'form-field',
 				'fields_class'		=> 'fields fields-uk',
 				'fields'		=> array(
