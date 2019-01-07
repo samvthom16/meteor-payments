@@ -93,7 +93,7 @@ class METEOR_STRIPE extends METEOR_BASE{
 			*/
 			$booleanData = array(
 				'ReadUkGiftAidAgreement',
-				'HasAgreedToUkGiftAid',
+				//'HasAgreedToUkGiftAid',
 				'IsIntlEmailOptIn',
 				'IsIntlMailOptIn',
 				'IsIntlPhoneOptIn'
@@ -133,7 +133,7 @@ class METEOR_STRIPE extends METEOR_BASE{
 				'Email',
 				'Phone',
 				'ReadUkGiftAidAgreement',
-				'HasAgreedToUkGiftAid'
+				//'HasAgreedToUkGiftAid'
 			) );
 			
 			// GET CUSTOMER BY EMAIL

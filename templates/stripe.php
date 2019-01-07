@@ -88,18 +88,6 @@
 				'name'			=> 'Recurring',
 				'value'			=> '1'
 			),
-			/*
-			'plan'	=> array(
-				'class'			=> 'form-field',
-				'fields'		=> array(
-					'one-time' => array(
-						'type'	=> 'radio'
-						'name'	=> 'Plan'
-						'label'	=> 'One Time'
-					)	
-				)
-			),
-			
 			/* NAME FIELD WITH INLINE FIELDS - FIRSTNAME AND LASTNAME */
 			'name'	=> array(
 				'label'				=> 'Name *',
@@ -250,6 +238,7 @@
 						'name'			=> 'ReadUkGiftAidAgreement',
 						'value'			=> '1'
 					),
+					/*
 					'agreedUK'	=> array(
 						'inline_label' 	=> $this->get_label( 'agreed-UK' ),
 						'class'			=> 'form-field',
@@ -257,6 +246,7 @@
 						'name'			=> 'HasAgreedToUkGiftAid',
 						'value'			=> '1'
 					),
+					*/
 				)
 			),
 			
