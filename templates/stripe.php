@@ -151,32 +151,8 @@
 				'fields_class'		=> 'fields fields-card',
 				'fields'		=> array(
 					'card-num'	=> array(
-						'type'				=> 'number',
-						'placeholder'		=> 'Card Number',
-						'container_class'	=> 'card-num',
-						'class'				=> 'field-required'
-					),
-					'card-month'	=> array(
-						'type'				=> 'dropdown',
-						'container_class'	=> 'card-month',
-						'class'				=> 'field-required',
-						'inline_label'		=> 'Month',
-						'options'			=> METEOR_DATA::getInstance()->months(),
-					),
-					'card-year'	=> array(
-						'type'				=> 'dropdown',
-						'container_class'	=> 'card-year',
-						'class'				=> 'field-required',
-						'inline_label'		=> 'Year',
-						'options'			=> METEOR_DATA::getInstance()->years(),
-					),
-					'card-cvc'	=> array(
-						'type'				=> 'number',
-						'container_class'	=> 'card-cvc',
-						'placeholder'		=> 'CVC',
-						'class'				=> 'field-required',
-						'inline_label'		=> 'Security Code'
-					)
+						'type'				=> 'stripe-card',
+					),					
 				)
 			),
 			/*
@@ -354,11 +330,14 @@
 	}
 
 	form[data-behaviour~=meteor-stripe-form] .fields-card{
-		display					: grid;
+		/* display					: grid;
 		grid-template-areas		: 'number number number number'
 			'month year cvc blank';
 		grid-template-columns	: 90px 90px 100px 1fr;
-		grid-gap				: 20px;
+		grid-gap				: 20px; */
+		height: 38px;
+		padding: 8px;
+	    border: 1px solid #a8a8a8;
 	}
 
 	/*

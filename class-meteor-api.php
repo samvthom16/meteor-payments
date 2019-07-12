@@ -47,8 +47,12 @@
 			add_action( 'wp_ajax_meteor_process_form', array( $this, 'ajaxProcessForm' ) );
 			add_action( 'wp_ajax_nopriv_meteor_process_form', array( $this, 'ajaxProcessForm' ) );
 
+		
 			require_once( 'class-meteor-stripe.php' );
 			$this->setStripeAPI( METEOR_STRIPE::getInstance() );
+
+			add_action( 'wp_ajax_meteor_intent_update', array( $this, 'paymentIntent' ) );
+			add_action( 'wp_ajax_nopriv_meteor_intent_update', array( $this, 'paymentIntent' ) );
 
 		}
 
@@ -81,19 +85,41 @@
 
 			$data = array();
 
-			array_push( $data, 'stripe-check' );
+			header('Content-Type: application/json');
+			# retrieve json from POST body
+			$json_obj = json_decode(file_get_contents('php://input'));
+			//$json_obj = json_decode($json_str);
+			//print_r($json_obj);wp_die();
+			
+			$this->getStripeAPI()->processForm( $json_obj );
+			//print_r( wp_json_encode( $data ) );
 
-			if( 'stripe' == $_POST['API'] ){
+			wp_die();
+		}
 
-				array_push( $data, 'stripe-check' );
 
-				if( isset( $_POST['stripeToken'] ) && !empty( $_POST['stripeToken'] ) && isset( $_POST['meteor-stripe'] ) && wp_verify_nonce( $_POST['meteor-stripe'], 'save' ) ){
-					$data = $this->getStripeAPI()->processForm( $_POST );
-				}
+		function paymentIntent(){
 
+
+			$id = $_GET['id'];
+			$amount = $_GET['amount'];
+			$currency = $_GET['currency'];
+			
+			
+			if(empty($id)) {
+			  // return some basic intent
+			  $intent = $this->stripe->getPaymentIntent();
+			  echo json_encode(["status"=>"ok","id"=>$intent->id,"client_secret"=>$intent->client_secret,"amount"=>$intent->amount,"currency"=>$intent->currency]);
+			
+			} else {
+			  // update amount of the existing intent
+			  $intent = $this->stripe->retrievePaymentIntent( $id );
+			  $intent->amount = $amount;
+			  $intent->currency = $currency;
+			  $intent->save();
+			  
+			  echo json_encode(["status"=>"ok","id"=>$intent->id,"amount"=>$intent->amount,"currency"=>$intent->currency]);
 			}
-
-			print_r( wp_json_encode( $data ) );
 
 			wp_die();
 		}
@@ -155,7 +181,9 @@
 						case 'checkbox':
 							include('templates/fields_checkbox.php');
 							break;
-
+						case 'stripe-card':	
+							include('templates/stripe-card.php');
+							break;
 						case 'email':
 						case 'number':
 						case 'text':
@@ -219,12 +247,12 @@
 
 				wp_enqueue_script( 'jquery' );
 
-				wp_enqueue_script( 'stripe', 'https://js.stripe.com/v2/', array('jquery'), '1.0.0', true);
+				wp_enqueue_script( 'stripe', 'https://js.stripe.com/v3/', array('jquery'), '1.0.0', true);
 
 
 				$uri = plugin_dir_url( __FILE__ );
 
-				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/main.js', array('jquery'), '1.1.4', true);
+				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/script.js', array('jquery'), '1.1.4', true);
 
 				wp_localize_script( 'meteor-api', 'meteor_settings', array(
 					'key'	=> $this->getStripeAPI()->getStripeKeys()['publishable']
