@@ -88,8 +88,6 @@
 			header('Content-Type: application/json');
 			# retrieve json from POST body
 			$json_obj = json_decode(file_get_contents('php://input'));
-			//$json_obj = json_decode($json_str);
-			//print_r($json_obj);wp_die();
 			
 			$this->getStripeAPI()->processForm( $json_obj );
 			//print_r( wp_json_encode( $data ) );

@@ -243,6 +243,7 @@
 				  	
 				  	if (result.error) {
 				      // Show error in payment form
+
 				    } else {
 				    	var postdata  = $form.serializeArray().reduce(function(obj, item) {
 										    obj[item.name] = item.value;
@@ -251,7 +252,6 @@
 
 				      	postdata['payment_method_id'] =  result.paymentMethod.id ;
 
-
 				      // Otherwise send paymentMethod.id to your server (see Step 2)
 				      fetch($form.data('url'), {
 				      	method: 'POST',
@@ -259,8 +259,6 @@
 				        body: JSON.stringify( postdata )
 				      }).then(function(result) {
 				        // Handle server response (see Step 3)
-				        console.log('callling method handleServerResponse');
-				        
 				        result.json().then(function(json) {
 				          handleServerResponse(json);
 				        })
@@ -274,17 +272,21 @@
 			}
 
 			function handleServerResponse(response) {
-				  console.log(response);
+				  
 				  if (response.error) {
+				  	console.log(response);
 				    // Show error from server on payment form
 				  } else if (response.requires_action) {
 				    // Use Stripe.js to handle required card action
 				    stripe.handleCardAction(
+
 				      response.payment_intent_client_secret
+				    
 				    ).then(function(result) {
+				      
 				      if (result.error) {
 				        // Show error in payment form
-				        console.log("error", result);
+				      	console.log(result);	
 				      } else {
 				        var postdata  = $form.serializeArray().reduce(function(obj, item) {
 										    obj[item.name] = item.value;
@@ -293,8 +295,7 @@
 
 				      	postdata['payment_intent_id'] =  result.paymentIntent.id ;
 
-
-				        // The card action has been handled
+						// The card action has been handled
 				        // The PaymentIntent can be confirmed again on the server
 				       
 				        fetch($form.data('url'), {
@@ -311,12 +312,11 @@
 				      }
 				    });
 				  } else {
-				  	console.log(response);
-
-					//console.log(result);
-				    if( response ){
-							showError( response );
-									
+				  	
+				  	if( response ){
+							//showError( response.message );
+							$errors.html(response.message);
+							$errors.show();		
 						}
 						
 						// HIDE THE FIELDS AFTER FORM HAS BEEN PROCESSED
@@ -333,16 +333,13 @@
 				}
 			
 			$form.submit( function( ev ){
-				console.log('form submitted');
+				
 				var	flag 	= formCheck( $form );
 				
 				if( flag ){
 					
 					showLoading();
 				
-					// create single-use token to charge the user
-					//Stripe.createToken( getStripeParams(), stripeResponse );
-
 					saveForm();
 				}
 				

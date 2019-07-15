@@ -84,124 +84,122 @@ class METEOR_STRIPE extends METEOR_BASE{
 		return $finalData;
 	}
 	
-	function processForm( $json_obj ){
-		
+	function processForm( $data ){
+		$data = (array) $data;
 
-		// try{
+		try{
 			
-		// 	// ADD DECIMAL VALUE
-		// 	$data['Amount'] = $data['Amount']."00";
+			// ADD DECIMAL VALUE
+			$data['Amount'] = $data['Amount']."00";
 			
-		// 	/*
-		// 	*	THIS HAS TO BE REFACTORED TO BE ADDED THROUGH ACTION HOOKS
-		// 	*/
-		// 	$booleanData = array(
-		// 		'ReadUkGiftAidAgreement',
-		// 		//'HasAgreedToUkGiftAid',
-		// 		'IsIntlEmailOptIn',
-		// 		'IsIntlMailOptIn',
-		// 		'IsIntlPhoneOptIn'
-		// 	);
-		// 	foreach( $booleanData as $booleanSlug ){
-		// 		if( isset( $data[$booleanSlug] ) && $data[$booleanSlug] ){
-		// 			$data[$booleanSlug] = true;
-		// 		}
-		// 		else{
-		// 			$data[$booleanSlug] = false;
-		// 		}
-		// 	}
-		// 	/*
-		// 	*	THIS HAS TO BE REFACTORED TO BE ADDED THROUGH ACTION HOOKS
-		// 	*/
-			
-			
-		// 	// BASIC CUSTOMER INFO
-		// 	$customerInfo = array(
-		// 		'email' 		=> $data['Email'],
-		// 		'description'	=> $data['FirstName']." ".$data['LastName'],
-		// 		'source'  		=> $data['stripeToken'],
-		// 		'metadata'		=> array()
-		// 	);
-			
-		// 	// ADD METADATA TO CUSTOMER INFO
-		// 	$customerInfo['metadata'] = $this->addMetaData( $data, array( 
-		// 		'SourceCode',
-		// 		'FirstName', 
-		// 		'LastName', 
-		// 		'AddressLine1', 
-		// 		'AddressLine2', 
-		// 		'AddressCity', 
-		// 		'AddressState', 
-		// 		'AddressZip', 
-		// 		'AddressCountry',
-		// 		'Email',
-		// 		'Phone',
-		// 		'ReadUkGiftAidAgreement',
-		// 		//'HasAgreedToUkGiftAid'
-		// 	) );
-			
-		// 	// GET CUSTOMER BY EMAIL
-		// 	$customer = $this->getCustomer( $data['Email'] );
-		// 	if( ! $customer ){
-		// 		//	CUSTOMER DOES NOT EXIST SO ADD TO STRIPE
-		// 		$customer = $this->createCustomer( $customerInfo );
-		// 	}
-		// 	else{
-		// 		$customer->metadata = $customerInfo['metadata'];
-		// 		$customer->save();
-		// 	}
+			/*
+			*	THIS HAS TO BE REFACTORED TO BE ADDED THROUGH ACTION HOOKS
+			*/
+			$booleanData = array(
+				'ReadUkGiftAidAgreement',
+				//'HasAgreedToUkGiftAid',
+				'IsIntlEmailOptIn',
+				'IsIntlMailOptIn',
+				'IsIntlPhoneOptIn'
+			);
+			foreach( $booleanData as $booleanSlug ){
+				if( isset( $data[$booleanSlug] ) && $data[$booleanSlug] ){
+					$data[$booleanSlug] = true;
+				}
+				else{
+					$data[$booleanSlug] = false;
+				}
+			}
+			/*
+			*	THIS HAS TO BE REFACTORED TO BE ADDED THROUGH ACTION HOOKS
+			*/
 			
 			
+			// BASIC CUSTOMER INFO
+			$customerInfo = array(
+				'email' 		=> $data['Email'],
+				'description'	=> $data['FirstName']." ".$data['LastName'],
+				/*'source'  		=> $data['stripeToken'],*/
+				'metadata'		=> array()
+			);
 			
-		// 	if( isset( $data['Recurring'] ) && $data['Recurring'] ){
-		// 		$planInfo = array(
-		// 			'amount'	=> $data['Amount'],
-		// 			'interval'	=> 'month',
-		// 			'currency'	=> $data['Currency'],
-		// 			'product'	=> array(
-		// 				'name'	=> $data['FormName'].' - '.$data['FirstName'].' '.$data['LastName']
-		// 			)
-		// 		);
-		// 		$this->createPlan( $planInfo );
-		// 	}
+			// ADD METADATA TO CUSTOMER INFO
+			$customerInfo['metadata'] = $this->addMetaData( $data, array( 
+				'SourceCode',
+				'FirstName', 
+				'LastName', 
+				'AddressLine1', 
+				'AddressLine2', 
+				'AddressCity', 
+				'AddressState', 
+				'AddressZip', 
+				'AddressCountry',
+				'Email',
+				'Phone',
+				'ReadUkGiftAidAgreement',
+				//'HasAgreedToUkGiftAid'
+			) );
 			
-		// 	// BASIC CHARGE INFO
-		// 	$chargeInfo = array(
-		// 		'customer' 		=> $customer->id,
-		// 		'amount'   		=> $data['Amount'],
-		// 		'currency' 		=> $data['Currency'],
-		// 		'description' 	=> $data['FormName'],
-		// 		'metadata' 		=> array()
-		// 	);
+			// GET CUSTOMER BY EMAIL
+			$customer = $this->getCustomer( $data['Email'] );
+			if( ! $customer ){
+				//	CUSTOMER DOES NOT EXIST SO ADD TO STRIPE
+				$customer = $this->createCustomer( $customerInfo );
+			}
+			else{
+				$customer->metadata = $customerInfo['metadata'];
+				$customer->save();
+			}
 			
-		// 	// ADD METADATA TO BASIC CHARGE INFO
-		// 	$chargeInfo['metadata'] = $this->addMetaData( $data, array( 
-		// 		'FirstName', 
-		// 		'LastName', 
-		// 		'IsIntlEmailOptIn',
-		// 		'IsIntlMailOptIn',
-		// 		'IsIntlPhoneOptIn',
-		// 	) );
+			
+			
+			if( isset( $data['Recurring'] ) && $data['Recurring'] ){
+				$planInfo = array(
+					'amount'	=> $data['Amount'],
+					'interval'	=> 'month',
+					'currency'	=> $data['Currency'],
+					'product'	=> array(
+						'name'	=> $data['FormName'].' - '.$data['FirstName'].' '.$data['LastName']
+					)
+				);
+				$this->createPlan( $planInfo );
+			}
+			
+			// BASIC CHARGE INFO
+			$chargeInfo = array(
+				'customer' 		=> $customer->id,
+				'amount'   		=> $data['Amount'],
+				'currency' 		=> $data['Currency'],
+				'description' 	=> $data['FormName'],
+				'confirmation_method' => 'manual',
+				'confirm' 		=> true,
+				'metadata' 		=> array()
+			);
+			
+			// ADD METADATA TO BASIC CHARGE INFO
+			$chargeInfo['metadata'] = $this->addMetaData( $data, array( 
+				'FirstName', 
+				'LastName', 
+				'IsIntlEmailOptIn',
+				'IsIntlMailOptIn',
+				'IsIntlPhoneOptIn',
+			) );
 
 
 			
 			$intent = null;
 			try {
-				if (isset($json_obj->payment_method_id)) {
-				  # Create the PaymentIntent
-				  $intent = \Stripe\PaymentIntent::create([
-				    'payment_method' => $json_obj->payment_method_id,
-				    'amount' => 1099,
-				    'currency' => 'gbp',
-				    'confirmation_method' => 'manual',
-				    'confirm' => true,
-				  ]);
+				if (isset($data['payment_method_id'])) {
+
+				  $chargeInfo['payment_method'] = $data['payment_method_id']; 
+				  
+				  $intent = \Stripe\PaymentIntent::create( $chargeInfo );
 				  
 				}
 
-				if (isset($json_obj->payment_intent_id)) {
+				if (isset($data['payment_intent_id'])) {
 				  $intent = \Stripe\PaymentIntent::retrieve(
-			        $json_obj->payment_intent_id
+			        $data['payment_intent_id']
 			      );
 			      $intent->confirm();
 			      
@@ -230,11 +228,11 @@ class METEOR_STRIPE extends METEOR_BASE{
 				
 			}*/
 				
-		// }catch( Exception $e ){
+		}catch( Exception $e ){
 			
-		// 	return array( 'success' => 0, 'message' => $e->getMessage() );
+			return array( 'status' => 0, 'message' => $e->getMessage() );
 			
-		// }
+		}
 		
 	}
 
@@ -253,7 +251,8 @@ class METEOR_STRIPE extends METEOR_BASE{
 			# The payment didn’t need any additional actions and completed!
 			# Handle post-payment fulfillment
 			echo json_encode([
-			"success" => true
+			"success" => true,
+			"message" => "Thank you for your donation."
 		]);
 		} else {
 		# Invalid status
