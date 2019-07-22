@@ -251,7 +251,7 @@
 										}, {});;
 
 				      	postdata['payment_method_id'] =  result.paymentMethod.id ;
-
+				    
 				      // Otherwise send paymentMethod.id to your server (see Step 2)
 				      fetch($form.data('url'), {
 				      	method: 'POST',

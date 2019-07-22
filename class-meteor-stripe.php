@@ -70,6 +70,26 @@ class METEOR_STRIPE extends METEOR_BASE{
 		$plan = \Stripe\Plan::create( $data );
 		return $plan;
 	}
+
+	function createSubscription($customer, $planInfo) {
+		try {
+			
+			$plan = $this->createPlan( $planInfo );
+			
+			$args = array(
+				"customer" => $customer->id,
+				"items" => [[ "plan" => $plan->id]],
+				"expand" => ["latest_invoice.payment_intent"],
+			);
+			
+			$subs = \Stripe\Subscription::create($args);
+		
+		} catch( Exception $e ) {
+			print_r($e->getMessage());
+		}
+			  
+		return $subs;
+	}
 	
 	/*
 	* ADD META DATA TO AN ARRAY IF THE KEYS MATCH FROM THE INPUT DATA
@@ -122,7 +142,17 @@ class METEOR_STRIPE extends METEOR_BASE{
 				/*'source'  		=> $data['stripeToken'],*/
 				'metadata'		=> array()
 			);
+
+
+			if(isset($data['payment_method_id']) && $data['payment_method_id'] ) {
+				
+				$customerInfo['payment_method'] = $data['payment_method_id'];
+				
+				$customerInfo['invoice_settings'] = [ "default_payment_method" => $data['payment_method_id'] 
+						];
+			}
 			
+
 			// ADD METADATA TO CUSTOMER INFO
 			$customerInfo['metadata'] = $this->addMetaData( $data, array( 
 				'SourceCode',
@@ -155,14 +185,15 @@ class METEOR_STRIPE extends METEOR_BASE{
 			
 			if( isset( $data['Recurring'] ) && $data['Recurring'] ){
 				$planInfo = array(
-					'amount'	=> $data['Amount'],
-					'interval'	=> 'month',
-					'currency'	=> $data['Currency'],
-					'product'	=> array(
-						'name'	=> $data['FormName'].' - '.$data['FirstName'].' '.$data['LastName']
+					"amount"	=> $data['Amount'],
+					"interval"	=> "month",
+					"currency"	=> $data['Currency'],
+					"product"	=> array(
+						"name"	=> $data['FormName']." - ".$data['FirstName']." ".$data['LastName']
 					)
 				);
-				$this->createPlan( $planInfo );
+				//$this->createPlan( $planInfo );
+				//$this->createSubscription($customer, $planInfo);
 			}
 			
 			// BASIC CHARGE INFO
@@ -191,7 +222,11 @@ class METEOR_STRIPE extends METEOR_BASE{
 			try {
 				if (isset($data['payment_method_id'])) {
 
-				  $chargeInfo['payment_method'] = $data['payment_method_id']; 
+				  $chargeInfo['payment_method'] = $data['payment_method_id'];
+
+				  if( isset( $data['Recurring'] ) && $data['Recurring'] ){
+				  	$chargeInfo['setup_future_usage'] = 'off_session';
+				  } 
 				  
 				  $intent = \Stripe\PaymentIntent::create( $chargeInfo );
 				  
@@ -205,7 +240,11 @@ class METEOR_STRIPE extends METEOR_BASE{
 			      
 				}
 			
-				$this->generatePaymentResponse($intent);
+				if( isset( $data['Recurring'] ) && $data['Recurring'] ){
+					$this-> generatePaymentResponse($intent, true, $customer, $planInfo);
+				} else {
+					$this->generatePaymentResponse($intent, false, null, null);
+				}
 			
 			} catch (\Stripe\Error\Base $e) {
 				# Display error on client
@@ -215,18 +254,6 @@ class METEOR_STRIPE extends METEOR_BASE{
 			}	
 								
 
-
-			/*// CHARGE THE CARD TO STRIPE
-			$chargeJson = \Stripe\Charge::create( $chargeInfo );
-					
-			if(	$chargeJson['amount_refunded'] == 0  
-				&& empty($chargeJson['failure_code'])
-				&& $chargeJson['paid'] == 1
-				&& $chargeJson['captured'] == 1 ){
-				
-				return array( 'success' => 1, 'message' => 'Thank you for your donation.');
-				
-			}*/
 				
 		}catch( Exception $e ){
 			
@@ -237,11 +264,13 @@ class METEOR_STRIPE extends METEOR_BASE{
 	}
 
 
-	 function generatePaymentResponse($intent) {
+	 function generatePaymentResponse($intent, $isRecurring = false, $customer, $planInfo ) {
 		# Note that if your API version is before 2019-02-11, 'requires_action'
 		# appears as 'requires_source_action'.
 		if ($intent->status == 'requires_action' &&
 			$intent->next_action->type == 'use_stripe_sdk') {
+
+			
 			# Tell the client to handle the action
 			echo json_encode([
 				'requires_action' => true,
@@ -250,6 +279,11 @@ class METEOR_STRIPE extends METEOR_BASE{
 		} else if ($intent->status == 'succeeded') {
 			# The payment didn’t need any additional actions and completed!
 			# Handle post-payment fulfillment
+
+			if( $isRecurring ) {
+				$subs = $this->createSubscription($customer, $planInfo);
+			}
+
 			echo json_encode([
 			"success" => true,
 			"message" => "Thank you for your donation."
