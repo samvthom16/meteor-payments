@@ -144,12 +144,13 @@ class METEOR_STRIPE extends METEOR_BASE{
 			);
 
 
-			if(isset($data['payment_method_id']) && $data['payment_method_id'] ) {
+			if( (isset($data['payment_method_id']) && $data['payment_method_id']) && (isset( $data['Recurring'] ) && $data['Recurring'])) {
 				
 				$customerInfo['payment_method'] = $data['payment_method_id'];
 				
 				$customerInfo['invoice_settings'] = [ "default_payment_method" => $data['payment_method_id'] 
 						];
+				
 			}
 			
 
@@ -189,7 +190,8 @@ class METEOR_STRIPE extends METEOR_BASE{
 					"interval"	=> "month",
 					"currency"	=> $data['Currency'],
 					"product"	=> array(
-						"name"	=> $data['FormName']." - ".$data['FirstName']." ".$data['LastName']
+						"name"	=> $data['FormName']." - ".$data['FirstName']." ".$data['LastName'],
+						"type" 	=> "service"
 					)
 				);
 				//$this->createPlan( $planInfo );
@@ -222,14 +224,46 @@ class METEOR_STRIPE extends METEOR_BASE{
 			try {
 				if (isset($data['payment_method_id'])) {
 
-				  $chargeInfo['payment_method'] = $data['payment_method_id'];
+					if(isset( $data['Recurring'] ) && $data['Recurring']) {
+						//https://stripe.com/docs/billing/migration/strong-customer-authentication#scenario-1
 
-				  if( isset( $data['Recurring'] ) && $data['Recurring'] ){
-				  	$chargeInfo['setup_future_usage'] = 'off_session';
-				  } 
-				  
-				  $intent = \Stripe\PaymentIntent::create( $chargeInfo );
-				  
+						$subs = $this->createSubscription($customer, $planInfo);
+						
+						$subs_status = $subs->status;
+						$intent_status = $subs->latest_invoice->payment_intent->status;
+
+						if($subs_status == 'active') {
+							
+							echo json_encode([
+								"type" => "subscription",
+								"status" => "success",
+								"message" => "Thank you for your donation."
+							]);
+							
+						} elseif( $subs_status == 'incomplete' && $intent_status == 'requires_payment_method' ) {
+							
+							echo json_encode([
+								"type" => "subscription",
+								"status" => "failed",
+								"message" => "Requires Payment Method."
+							]);
+
+						} else if( $subs_status == 'incomplete' && $intent_status == 'requires_action' ) {
+
+							echo json_encode([
+								'type' => 'subscription',
+								'status' => 'requires_action',
+								'payment_intent_client_secret' => $subs->latest_invoice->payment_intent->client_secret
+							]);
+						}	
+						
+						wp_die();
+					
+					} else {
+						$chargeInfo['payment_method'] = $data['payment_method_id'];
+				        $intent = \Stripe\PaymentIntent::create( $chargeInfo );
+					}
+
 				}
 
 				if (isset($data['payment_intent_id'])) {
@@ -240,11 +274,7 @@ class METEOR_STRIPE extends METEOR_BASE{
 			      
 				}
 			
-				if( isset( $data['Recurring'] ) && $data['Recurring'] ){
-					$this-> generatePaymentResponse($intent, true, $customer, $planInfo);
-				} else {
-					$this->generatePaymentResponse($intent, false, null, null);
-				}
+				$this->generatePaymentResponse($intent);
 			
 			} catch (\Stripe\Error\Base $e) {
 				# Display error on client
@@ -264,7 +294,7 @@ class METEOR_STRIPE extends METEOR_BASE{
 	}
 
 
-	 function generatePaymentResponse($intent, $isRecurring = false, $customer, $planInfo ) {
+	 function generatePaymentResponse($intent) {
 		# Note that if your API version is before 2019-02-11, 'requires_action'
 		# appears as 'requires_source_action'.
 		if ($intent->status == 'requires_action' &&
@@ -280,14 +310,10 @@ class METEOR_STRIPE extends METEOR_BASE{
 			# The payment didn’t need any additional actions and completed!
 			# Handle post-payment fulfillment
 
-			if( $isRecurring ) {
-				$subs = $this->createSubscription($customer, $planInfo);
-			}
-
 			echo json_encode([
-			"success" => true,
-			"message" => "Thank you for your donation."
-		]);
+				"success" => true,
+				"message" => "Thank you for your donation."
+			]);
 		} else {
 		# Invalid status
 		http_response_code(500);

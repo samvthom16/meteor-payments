@@ -234,10 +234,12 @@
 			
 			
 			function saveForm(){
-
+				
+				var customer_name = $form.find('input[name="FirstName"]').val() + ' ' + $form.find('input[name="LastName"]').val()
+				
 				stripe.createPaymentMethod('card', cardElement, {
 				  
-				    billing_details: {name: 'John Doe'}
+				    billing_details: {name: customer_name}
 				  
 				  }).then(function(result) {
 				  	
@@ -258,79 +260,116 @@
 				        headers: { 'Content-Type': 'application/json' },
 				        body: JSON.stringify( postdata )
 				      }).then(function(result) {
+				      	
+				      	// console.log(result.json());
+
 				        // Handle server response (see Step 3)
 				        result.json().then(function(json) {
-				          handleServerResponse(json);
+				          
+				          if(json.type == 'subscription' ) {
+				          	
+				          	if(json.status == "success") {
+				          		showResponseOnFrontend({message: json.message});
+				          	}
+				          	else if(json.status == "failed") {
+				          		showResponseOnFrontend({message: json.message});	
+				          	}
+				          	else if( json.status == "requires_action" ){
+				          		handleSubscriptionAction(json);
+				          	} else {
+				          		console.log(json.message);
+				          	}
+
+				          } else {
+				          	
+				          	handleServerResponse(json);	
+				          }
+
 				        })
 				      });
 				    }
 				  });
+				
+			}
 
-				
-				
-				
+
+			function handleSubscriptionAction( response ) {
+
+				stripe.handleCardPayment(response.payment_intent_client_secret).then(function(result) {
+				  if (result.error) {
+				    console.log('3d Subs Failed');
+				  } else {
+				    // The payment has succeeded. Display a success message.
+				    showResponseOnFrontend({message: "Thank you for your donation."});
+				  }
+				});
 			}
 
 			function handleServerResponse(response) {
 				  
-				  if (response.error) {
-				  	console.log(response);
-				    // Show error from server on payment form
-				  } else if (response.requires_action) {
-				    // Use Stripe.js to handle required card action
-				    stripe.handleCardAction(
+				if (response.error) {
+					console.log(response);
+				// Show error from server on payment form
+				} else if (response.requires_action) {
+				// Use Stripe.js to handle required card action
+				stripe.handleCardAction(
 
-				      response.payment_intent_client_secret
-				    
-				    ).then(function(result) {
-				      
-				      if (result.error) {
-				        // Show error in payment form
-				      	console.log(result);	
-				      } else {
-				        var postdata  = $form.serializeArray().reduce(function(obj, item) {
-										    obj[item.name] = item.value;
-										    return obj;
-										}, {});;
+				  response.payment_intent_client_secret
 
-				      	postdata['payment_intent_id'] =  result.paymentIntent.id ;
-
-						// The card action has been handled
-				        // The PaymentIntent can be confirmed again on the server
-				       
-				        fetch($form.data('url'), {
-				          
-				          method: 'POST',
-				          headers: { 'Content-Type': 'application/json' },
-				          body: JSON.stringify(postdata)
-
-				        }).then(function(confirmResult) {
-				          
-				          return confirmResult.json();
-				        
-				        }).then(handleServerResponse);
-				      }
-				    });
+				).then(function(result) {
+				  
+				  if (result.error) {
+				    // Show error in payment form
+				  	console.log(result);	
 				  } else {
-				  	
-				  	if( response ){
-							//showError( response.message );
-							$errors.html(response.message);
-							$errors.show();		
-						}
-						
-						// HIDE THE FIELDS AFTER FORM HAS BEEN PROCESSED
-						$form.find('.meteor-slide').hide();
-						
-						stopLoading();
-						
-						// SCROLL THE DOCUMENT TO THE TOP OF THE FORM AFTER THE SLIDES HAVE BEEN HIDDEN
-						$([document.documentElement, document.body]).animate({
-							scrollTop: $form.offset().top - 100
-						}, 1000);
+				    var postdata  = $form.serializeArray().reduce(function(obj, item) {
+									    obj[item.name] = item.value;
+									    return obj;
+									}, {});;
 
+				  	postdata['payment_intent_id'] =  result.paymentIntent.id ;
+
+					// The card action has been handled
+				    // The PaymentIntent can be confirmed again on the server
+				   
+				    fetch($form.data('url'), {
+				      
+				      method: 'POST',
+				      headers: { 'Content-Type': 'application/json' },
+				      body: JSON.stringify(postdata)
+
+				    }).then(function(confirmResult) {
+				      
+				      return confirmResult.json();
+				    
+				    }).then(handleServerResponse);
 				  }
+				});
+				} else {
+
+					showResponseOnFrontend( response );
+
 				}
+			}
+
+			function showResponseOnFrontend( response ) {
+				if( response ){
+					//showError( response.message );
+					$errors.html(response.message);
+					$errors.show();		
+				}
+				
+				// HIDE THE FIELDS AFTER FORM HAS BEEN PROCESSED
+				$form.find('.meteor-slide').hide();
+				
+				stopLoading();
+				
+				// SCROLL THE DOCUMENT TO THE TOP OF THE FORM AFTER THE SLIDES HAVE BEEN HIDDEN
+				$([document.documentElement, document.body]).animate({
+					scrollTop: $form.offset().top - 100
+				}, 1000);
+			}
+
 			
 			$form.submit( function( ev ){
 				
