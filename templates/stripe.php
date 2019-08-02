@@ -127,15 +127,11 @@
 				'fields_class'		=> 'fields fields-uk',
 				'fields'		=> array(
 					'email'	=> array(
-						'inline_label' 	=> 'Newsletter (bi-monthly)',
-						'class'					=> 'form-field',
-						'type'					=> 'radio',
-						'name'					=> 'IsIntlEmailOptIn',
-						'options'				=> array(
-							'1'						=> 'Yes',
-							'0'						=> 'No'
-						),
-						'default'	=> '1',
+						'inline_label' 	=> 'Yes, I want to Subscribe',
+						'class'			=> 'form-field',
+						'type'			=> 'checkbox',
+						'name'			=> 'IsIntlEmailOptIn',
+						'value'			=> '1'	
 					),
 				)
 			),

@@ -19,7 +19,7 @@
 			*/
 			$this->setLabels( array(
 				'recurring'						=> 'Pay this amount monthly',
-				'email-updates'				=> 'Yes, please keep me informed by email about your work, your breakthroughs, and how to best support you: *',
+				'email-updates'				=> 'Yes, please keep me informed by email about your work, your breakthroughs, and how to best support you:',
 				'specific-UK'					=> 'Only for UK residents',
 				'read-UK'							=> 'Read UK Gift Aid Agreement',
 				//'agreed-UK'					=> 'Has Agreed To Uk Gift Aid',
