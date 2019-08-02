@@ -282,6 +282,17 @@
 	<div style="margin-top: 30px;font-style:italic;"><?php echo $this->get_label( 'form-message-below' );?></div>
 </form>
 <style>
+	
+	form[data-behaviour~=meteor-stripe-form] .meteor-loader {
+		display: none;
+	    border: 2px solid #000;
+	    border-radius: 50%;
+	    border-top: 2px solid #efefef;
+	    width: 12px;
+	    height: 12px;
+		-webkit-animation: spin 2s linear infinite; /* Safari */
+		animation: spin 2s linear infinite;
+	}
 	form[data-behaviour~=meteor-stripe-form] .meteor-slide{
 		display: none;
 	}

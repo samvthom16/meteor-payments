@@ -226,6 +226,7 @@
 				}
 				else{
 					_e( "<li><button type='submit'>Submit</button></li>" );
+					_e( "<li><div class='meteor-loader'></div></li>" );
 				}
 
 				_e( "</ul>" );

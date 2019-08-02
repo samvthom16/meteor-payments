@@ -4,7 +4,7 @@
 	
 		return this.each(function() {
 			
-			var $el 		= jQuery( this );
+			var $el = jQuery( this );
 				
 			// GET THE TOTAL NUMBER OF SLIDES
 			function totalSlides(){
@@ -104,6 +104,7 @@
 			
 			var $form 	= $( this ),
 				$submit	= $form.find('[type~=submit]'),
+				$loader = $form.find('.meteor-loader'),
 				$errors = $form.find('.payment-errors');
 			
 			
@@ -185,7 +186,7 @@
 				
 				$.each( fields, function( i, field ){
 					if( !field.value ){
-						showError( "You have missed some required fields." ); 		
+						showError( {error: "You have missed some required fields."} ); 		
 						flag = false; 
 					}
 				});
@@ -215,9 +216,10 @@
 				
 				// DISABLE THE SUBMIT BUTTON TO PREVENT RESUBMISSION
 				$submit.attr( 'disabled', 'disabled' );
-				
-				$submit.data( 'text', $submit.html() );
-				$submit.html( 'Processing..' );
+
+				$loader.css( 'display', 'inline-block' );
+
+				$form.css( 'opacity', '0.5' );
 			}
 			
 			/*
@@ -227,8 +229,9 @@
 				// enable the submit button
 				$submit.removeAttr("disabled");
 				
-				// REVERT BACK THE ORIGINAL TEXT OF THE BUTTON
-				$submit.html( $submit.data( 'text' ) );
+				$loader.css( 'display', 'none' );
+
+				$form.css( 'opacity', '1' );
 			}
 			
 			
@@ -378,7 +381,7 @@
 				if( flag ){
 					
 					showLoading();
-				
+					
 					saveForm();
 				}
 				
@@ -500,6 +503,7 @@
 }(jQuery));
 
 jQuery(document).ready(function(){
+
 	
 	jQuery( 'form[data-behaviour~=meteor-stripe-form]' ).meteor_stripe();
 	
