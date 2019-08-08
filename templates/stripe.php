@@ -127,15 +127,11 @@
 				'fields_class'		=> 'fields fields-uk',
 				'fields'		=> array(
 					'email'	=> array(
-						'inline_label' 	=> 'Newsletter (bi-monthly)',
-						'class'					=> 'form-field',
-						'type'					=> 'radio',
-						'name'					=> 'IsIntlEmailOptIn',
-						'options'				=> array(
-							'1'						=> 'Yes',
-							'0'						=> 'No'
-						),
-						'default'	=> '1',
+						'inline_label' 	=> 'Yes, I want to Subscribe',
+						'class'			=> 'form-field',
+						'type'			=> 'checkbox',
+						'name'			=> 'IsIntlEmailOptIn',
+						'value'			=> '1'	
 					),
 				)
 			),
@@ -151,32 +147,8 @@
 				'fields_class'		=> 'fields fields-card',
 				'fields'		=> array(
 					'card-num'	=> array(
-						'type'				=> 'number',
-						'placeholder'		=> 'Card Number',
-						'container_class'	=> 'card-num',
-						'class'				=> 'field-required'
-					),
-					'card-month'	=> array(
-						'type'				=> 'dropdown',
-						'container_class'	=> 'card-month',
-						'class'				=> 'field-required',
-						'inline_label'		=> 'Month',
-						'options'			=> METEOR_DATA::getInstance()->months(),
-					),
-					'card-year'	=> array(
-						'type'				=> 'dropdown',
-						'container_class'	=> 'card-year',
-						'class'				=> 'field-required',
-						'inline_label'		=> 'Year',
-						'options'			=> METEOR_DATA::getInstance()->years(),
-					),
-					'card-cvc'	=> array(
-						'type'				=> 'number',
-						'container_class'	=> 'card-cvc',
-						'placeholder'		=> 'CVC',
-						'class'				=> 'field-required',
-						'inline_label'		=> 'Security Code'
-					)
+						'type'				=> 'stripe-card',
+					),					
 				)
 			),
 			/*
@@ -306,6 +278,17 @@
 	<div style="margin-top: 30px;font-style:italic;"><?php echo $this->get_label( 'form-message-below' );?></div>
 </form>
 <style>
+	
+	form[data-behaviour~=meteor-stripe-form] .meteor-loader {
+		display: none;
+	    border: 2px solid #000;
+	    border-radius: 50%;
+	    border-top: 2px solid #efefef;
+	    width: 12px;
+	    height: 12px;
+		-webkit-animation: spin 2s linear infinite; /* Safari */
+		animation: spin 2s linear infinite;
+	}
 	form[data-behaviour~=meteor-stripe-form] .meteor-slide{
 		display: none;
 	}
@@ -354,11 +337,14 @@
 	}
 
 	form[data-behaviour~=meteor-stripe-form] .fields-card{
-		display					: grid;
+		/* display					: grid;
 		grid-template-areas		: 'number number number number'
 			'month year cvc blank';
 		grid-template-columns	: 90px 90px 100px 1fr;
-		grid-gap				: 20px;
+		grid-gap				: 20px; */
+		height: 38px;
+		padding: 8px;
+	    border: 1px solid #a8a8a8;
 	}
 
 	/*
