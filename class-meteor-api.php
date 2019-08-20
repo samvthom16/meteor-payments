@@ -16,17 +16,17 @@
 
 			/*
 			* DEFAULT LIST OF LABELS THAT CAN BE UPDATED FROM THE BACKEND
-			*/
-			$this->setLabels( array(
-				'recurring'						=> 'Pay this amount monthly',
-				'email-updates'				=> 'Yes, please keep me informed by email about your work, your breakthroughs, and how to best support you:',
-				'specific-UK'					=> 'Only for UK residents',
-				'read-UK'							=> 'Read UK Gift Aid Agreement',
-				//'agreed-UK'					=> 'Has Agreed To Uk Gift Aid',
-				'phone'								=> '*Please keep me informed about your work and how to best support you by phone',
-				'updates'							=> 'Would you like to receive updates by',
-				'form-message-below'	=> 'We treat your personal data with care and in compliance with applicable law. Please visit ADFInternational.org/privacy for a full overview.'
-			) );
+			// */
+			// $this->setLabels( array(
+			// 	'recurring'						=> 'Pay this amount monthly',
+			// 	'email-updates'				=> 'Yes, please keep me informed by email about your work, your breakthroughs, and how to best support you:',
+			// 	'specific-UK'					=> 'Only for UK residents',
+			// 	'read-UK'							=> 'Read UK Gift Aid Agreement',
+			// 	//'agreed-UK'					=> 'Has Agreed To Uk Gift Aid',
+			// 	'phone'								=> '*Please keep me informed about your work and how to best support you by phone',
+			// 	'updates'							=> 'Would you like to receive updates by',
+			// 	'form-message-below'	=> 'We treat your personal data with care and in compliance with applicable law. Please visit ADFInternational.org/privacy for a full overview.'
+			// ) );
 			// GET THE CUSTOMISED LABELS FROM THE DB
 			$labels_db = get_option('meteor_labels');
 			if( !$labels_db ){
@@ -47,7 +47,7 @@
 			add_action( 'wp_ajax_meteor_process_form', array( $this, 'ajaxProcessForm' ) );
 			add_action( 'wp_ajax_nopriv_meteor_process_form', array( $this, 'ajaxProcessForm' ) );
 
-		
+
 			require_once( 'class-meteor-stripe.php' );
 			$this->setStripeAPI( METEOR_STRIPE::getInstance() );
 
@@ -88,7 +88,7 @@
 			header('Content-Type: application/json');
 			# retrieve json from POST body
 			$json_obj = json_decode(file_get_contents('php://input'));
-			
+
 			$this->getStripeAPI()->processForm( $json_obj );
 			//print_r( wp_json_encode( $data ) );
 
@@ -102,20 +102,20 @@
 			$id = $_GET['id'];
 			$amount = $_GET['amount'];
 			$currency = $_GET['currency'];
-			
-			
+
+
 			if(empty($id)) {
 			  // return some basic intent
 			  $intent = $this->stripe->getPaymentIntent();
 			  echo json_encode(["status"=>"ok","id"=>$intent->id,"client_secret"=>$intent->client_secret,"amount"=>$intent->amount,"currency"=>$intent->currency]);
-			
+
 			} else {
 			  // update amount of the existing intent
 			  $intent = $this->stripe->retrievePaymentIntent( $id );
 			  $intent->amount = $amount;
 			  $intent->currency = $currency;
 			  $intent->save();
-			  
+
 			  echo json_encode(["status"=>"ok","id"=>$intent->id,"amount"=>$intent->amount,"currency"=>$intent->currency]);
 			}
 
@@ -179,7 +179,7 @@
 						case 'checkbox':
 							include('templates/fields_checkbox.php');
 							break;
-						case 'stripe-card':	
+						case 'stripe-card':
 							include('templates/stripe-card.php');
 							break;
 						case 'email':
@@ -200,7 +200,7 @@
 
 		}
 
-		function form( $form ){
+		function form( $form, $lang ){
 
 			$i = 0;
 
@@ -217,15 +217,18 @@
 
 				_e( "<ul class='meteor-list meteor-list-inline'>" );
 
+				//Gets the button text
+				$btn_text = $this->getLabels();
+
 				// HIDE IN THE FIRST PAGE OF THE FORM
-				if( $i ){ _e( "<li><button data-behaviour='meteor-slide-prev'>Previous</button></li>" ); }
+				if( $i ){ _e( "<li><button data-behaviour='meteor-slide-prev'>".$btn_text['btn_prev'][$lang]."</button></li>" ); }
 
 				// IN THE LAST FORM, THE TEXT SHOULD CHANGE TO SUBMIT
 				if( $i != count( $form ) - 1 ){
-					_e( "<li><button data-behaviour='meteor-slide-next'>Next</button></li>" );
+					_e( "<li><button data-behaviour='meteor-slide-next'>".$btn_text['btn_next'][$lang]."</button></li>" );
 				}
 				else{
-					_e( "<li><button type='submit'>Submit</button></li>" );
+					_e( "<li><button type='submit'>".$btn_text['btn_submit'][$lang]."</button></li>" );
 					_e( "<li><div class='meteor-loader'></div></li>" );
 				}
 
@@ -270,10 +273,18 @@
 
 			$atts = shortcode_atts( array(
 				'name' 		=> 'Donation Form',
-				'source_id'	=> '00000'
+				'source_id'	=> '00000',
+				'lang'	=>	'en'
 			), $atts, $this->getShortcode() );
 
 			ob_start();
+
+			// Translation
+			if( $atts['lang'] ){
+				require_once( 'lib/vars.php' );
+				$labels = apply_filters( 'meteor-labels', array() );
+				$this->setLabels( $labels );
+			}
 
 			$error_flag = false;
 
