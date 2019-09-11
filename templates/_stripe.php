@@ -1,5 +1,6 @@
 <?php
 	$lang = $atts['lang'];
+
 	add_filter( 'meteor_data_currencies', function( $currencies ){
 		foreach( $currencies as $slug => $value ){
 			$currencies[ $slug ] = $slug;
@@ -42,12 +43,12 @@
 						'type'				=> 'dropdown',
 						'name'				=> 'Currency',
 						'options'			=> METEOR_DATA::getInstance()->currencies(),
-						'label'				=> $this->get_label( 'currency', $lang ),
+						'label'				=> $labels['currency'][$lang],
 						'container_class'	=> 'form-field',
 						'class'				=> 'field-required',
 					),
 					'amount_choices' => array(
-						'label'				=> $this->get_label( 'amount_choices', $lang ),
+						'label'				=> $labels['amount_choices'][$lang],
 						'container_class'	=> 'form-field',
 						'type'				=> 'radio',
 						'name'				=> 'AmountChoices',
@@ -57,7 +58,7 @@
 							'75'	=> '75',
 							'100'	=> '100',
 							'250'	=> '250',
-							'Other'	=> $this->get_label( 'other', $lang )
+							'Other'	=> $labels['other'][$lang]
 						),
 						'default'	=> '35'
 					),
@@ -65,7 +66,7 @@
 						'container_class'	=> 'form-field form-custom-amount',
 						'type'			=> 'number',
 						'name'			=> 'AmountCustom',
-						'placeholder'	=> $this->get_label( 'custom-amount', $lang ),
+						'placeholder'	=> $labels['custom-amount'][$lang],
 						'size'			=> '50'	,
 						'class'			=> 'fields',
 					),
@@ -82,7 +83,7 @@
 				)
 			),
 			'recurring'	=> array(
-				'inline_label' 	=> $this->get_label( 'recurring', $lang ),
+				'inline_label' 	=> $labels['recurring'][$lang],
 				'class'			=> 'form-field',
 				'type'			=> 'checkbox',
 				'name'			=> 'Recurring',
@@ -90,21 +91,21 @@
 			),
 			/* NAME FIELD WITH INLINE FIELDS - FIRSTNAME AND LASTNAME */
 			'name'	=> array(
-				'label'				=> $this->get_label( 'name', $lang ),
+				'label'				=> $labels['name'][$lang],
 				'container_class'	=> 'form-field',
 				'fields_class'		=> 'fields fields-cols-2',
 				'fields'	=> array(
 					'firstname'	=> array(
 						'type'			=> 'text',
 						'name'			=> 'FirstName',
-						'placeholder'	=> $this->get_label( 'firstname', $lang ),
+						'placeholder'	=> $labels['firstname'][$lang],
 						'size'			=> '50',
 						'class'			=> 'fields field-required',
 					),
 					'lastname'	=> array(
 						'type'			=> 'text',
 						'name'			=> 'LastName',
-						'placeholder'	=> $this->get_label( 'lastname', $lang ),
+						'placeholder'	=> $labels['lastname'][$lang],
 						'size'			=> '50',
 						'class'			=> 'fields field-required',
 					)
@@ -112,22 +113,22 @@
 			),
 
 			'email'	=> array(
-				'label'				=> $this->get_label( 'email', $lang ),
+				'label'				=> $labels['email'][$lang],
 				'container_class'	=> 'form-field',
 				'class'				=> 'form-field field-required',
 				'type'				=> 'email',
 				'name'				=> 'Email',
-				'placeholder'		=> $this->get_label( 'email_addr', $lang ),
+				'placeholder'		=> $labels['email_addr'][$lang],
 				'size'				=> '100'
 			),
 
 			'email-updates' => array(
-				'label'				=> $this->get_label( 'email-updates', $lang ),
+				'label'				=> $labels['email-updates'][$lang],
 				'container_class'	=> 'form-field',
 				'fields_class'		=> 'fields fields-uk',
 				'fields'		=> array(
 					'email'	=> array(
-						'inline_label' 	=> $this->get_label( 'email_inline_notify', $lang ),
+						'inline_label' 	=> $labels['email_inline_notify'][$lang],
 						'class'			=> 'form-field',
 						'type'			=> 'checkbox',
 						'name'			=> 'IsIntlEmailOptIn',
@@ -142,7 +143,7 @@
 			* CARD DETAILS: CARD NUMBER, CVC, MONTH & YEAR
 			*/
 			'card'	=> array(
-				'label'				=> $this->get_label( 'card', $lang ),
+				'label'				=> $labels['card'][$lang],
 				'container_class'	=> 'form-field',
 				'fields_class'		=> 'fields fields-card',
 				'fields'		=> array(
@@ -155,45 +156,45 @@
 			* ADDRESS DETAILS: LINE 1 & 2, CITY, STATE, ZIP, COUNTRY
 			*/
 			'address'	=> array(
-				'label'				=> $this->get_label( 'address', $lang ),
+				'label'				=> $labels['address'][$lang],
 				'container_class'	=> 'form-field',
 				'fields_class'		=> 'fields fields-cols-2',
 				'fields'		=> array(
 					'address-line1'	=> array(
 						'type'			=> 'text',
-						'placeholder'	=> $this->get_label( 'address-line1', $lang ),
+						'placeholder'	=> $labels['address-line1'][$lang],
 						'class'			=> 'addr-line1',
 						'name'			=> 'AddressLine1'
 					),
 					'address-line2'	=> array(
 						'type'			=> 'text',
-						'placeholder'	=> $this->get_label( 'address-line2', $lang ),
+						'placeholder'	=> $labels['address-line2'][$lang],
 						'class'			=> 'addr-line2',
 						'name'			=> 'AddressLine2'
 					),
 					'address-city'	=> array(
 						'type'			=> 'text',
-						'placeholder'	=> $this->get_label( 'address-city', $lang ),
+						'placeholder'	=> $labels['address-city'][$lang],
 						'class'			=> 'addr-city',
 						'name'			=> 'AddressCity'
 					),
 					'address-state'	=> array(
 						'type'			=> 'text',
-						'placeholder'	=> $this->get_label( 'address-state', $lang ),
+						'placeholder'	=> $labels['address-state'][$lang],
 						'class'			=> 'addr-state',
 						'name'			=> 'AddressState'
 					),
 					'address-zip'	=> array(
 						'type'			=> 'text',
-						'placeholder'	=> $this->get_label( 'address-zip', $lang ),
-						'inline_label' 	=> $this->get_label( 'address-zip', $lang ),
+						'placeholder'	=> $labels['address-zip'][$lang],
+						'inline_label' 	=> $labels['address-zip'][$lang],
 						'class'			=> 'addr-zip',
 						'name'			=> 'AddressZip'
 					),
 					'address-country' => array(
 						'type'			=> 'dropdown',
 						'name'			=> 'AddressCountry',
-						'inline_label' 	=> $this->get_label( 'address-country', $lang ),
+						'inline_label' 	=> $labels['address-country'][$lang],
 						'class'			=> 'addr-country field-required',
 						'options'		=> METEOR_DATA::getInstance()->countries()
 					),
@@ -201,14 +202,14 @@
 			),
 
 			'specificUK' => array(
-				'label'				=> $this->get_label( 'specific-UK', $lang ),
+				'label'				=> $labels['specific-UK'][$lang],
 				'container_class'	=> 'form-field',
 				'fields_class'		=> 'fields fields-uk',
 				'behaviour'			=> 'conditional-display',
 				'state'				=> 'AddressCountry=GB',
 				'fields'		=> array(
 					'readUK'	=> array(
-						'inline_label' 	=> $this->get_label( 'read-UK', $lang ),
+						'inline_label' 	=> $labels['read-UK'][$lang],
 						'class'			=> 'form-field',
 						'type'			=> 'checkbox',
 						'name'			=> 'ReadUkGiftAidAgreement',
@@ -227,29 +228,29 @@
 			),
 
 			'phone'	=> array(
-				'label'				=> $this->get_label( 'phone_inline', $lang ),
+				'label'				=> $labels['phone_inline'][$lang],
 				'container_class'	=> 'form-field',
 				'type'				=> 'text',
 				'name'				=> 'Phone',
-				'placeholder'		=> $this->get_label( 'phone_number', $lang ),
+				'placeholder'		=> $labels['phone_number'][$lang],
 				'size'				=> '100',
-				'inline_label'		=> $this->get_label( 'phone', $lang )
+				'inline_label'		=> $labels['phone'][$lang]
 			),
 
 			'updates' => array(
-				'label'				=> $this->get_label( 'updates', $lang ),
+				'label'				=> $labels['updates'][$lang],
 				'container_class'	=> 'form-field',
 				'fields_class'		=> 'fields fields-uk',
 				'fields'		=> array(
 					'mail'	=> array(
-						'inline_label' 	=> $this->get_label( 'mail', $lang ),
+						'inline_label' 	=> $labels['mail'][$lang],
 						'class'			=> 'form-field',
 						'type'			=> 'checkbox',
 						'name'			=> 'IsIntlMailOptIn',
 						'value'			=> '1'
 					),
 					'phone'	=> array(
-						'inline_label' 	=> $this->get_label( 'phone_inline', $lang ),
+						'inline_label' 	=> $labels['phone_inline'][$lang],
 						'class'			=> 'form-field',
 						'type'			=> 'checkbox',
 						'name'			=> 'IsIntlPhoneOptIn',
@@ -275,7 +276,7 @@
 
 	?>
 	<div class="payment-errors"><?php if( $error_flag ) _e( $error_flag );?></div>
-	<div style="margin-top: 30px;font-style:italic;"><?php echo $this->get_label( 'form-message-below', $lang );?></div>
+	<div style="margin-top: 30px;font-style:italic;"><?php echo $labels['form-message-below'][$lang];?></div>
 </form>
 <style>
 

@@ -16,12 +16,7 @@
 
 			/*
 			* DEFAULT LIST OF LABELS THAT CAN BE UPDATED FROM THE BACKEND
-			*/
-
-			// Require labels array
-			require_once( 'lib/vars.php' );
-			$this->setLabels( apply_filters( 'meteor-labels', array() ) );
-
+			// */
 			// $this->setLabels( array(
 			// 	'recurring'						=> 'Pay this amount monthly',
 			// 	'email-updates'				=> 'Yes, please keep me informed by email about your work, your breakthroughs, and how to best support you:',
@@ -76,32 +71,12 @@
 		/* GETTER AND SETTER FUNCTIONS */
 
 		// GET ONE LABEL FROM THE CUSTOMISED AND DEFAULT LIST
-		function get_label( $key, $lang ){
-
-			// echo "<pre>";
-			// print_r( $key );
-			// echo "</pre>";
-
-			// wp_die();
+		function get_label( $key ){
 
 			$labels_db = $this->getLabelsDB();
 			$labels = $this->getLabels();
 
-			 //echo "<pre>";
-			 //print_r( $labels_db );
-			 //echo "</pre>";
-
-			 //echo $key;
-			 //echo $lang;
-
-			if( isset(  $labels_db[ $key ] ) && isset( $labels_db[ $key ][ $lang ] ) ){
-				return $labels_db[ $key ][ $lang ];
-			}
-			elseif( isset( $labels[$key] ) &&  isset( $labels[$key][$lang] ) ){
-				return $labels[$key][$lang];
-			}
-
-			return '';
+			return isset( $labels_db[$key] ) ? $labels_db[$key] : ( isset( $labels[$key] ) ? $labels[$key] : ''  );
 
 
 		}
@@ -243,20 +218,17 @@
 				_e( "<ul class='meteor-list meteor-list-inline'>" );
 
 				//Gets the button text
-				// $btn_text = $this->get_label();
-
-				// echo $btn_text
-				// wp_die();
+				$btn_text = $this->getLabels();
 
 				// HIDE IN THE FIRST PAGE OF THE FORM
-				if( $i ){ _e( "<li><button data-behaviour='meteor-slide-prev'>".$this->get_label( 'btn_prev', $lang )."</button></li>" ); }
+				if( $i ){ _e( "<li><button data-behaviour='meteor-slide-prev'>".$btn_text['btn_prev'][$lang]."</button></li>" ); }
 
 				// IN THE LAST FORM, THE TEXT SHOULD CHANGE TO SUBMIT
 				if( $i != count( $form ) - 1 ){
-					_e( "<li><button data-behaviour='meteor-slide-next'>".$this->get_label( 'btn_next', $lang )."</button></li>" );
+					_e( "<li><button data-behaviour='meteor-slide-next'>".$btn_text['btn_next'][$lang]."</button></li>" );
 				}
 				else{
-					_e( "<li><button type='submit'>".$this->get_label( 'btn_submit', $lang )."</button></li>" );
+					_e( "<li><button type='submit'>".$btn_text['btn_submit'][$lang]."</button></li>" );
 					_e( "<li><div class='meteor-loader'></div></li>" );
 				}
 
@@ -306,6 +278,13 @@
 			), $atts, $this->getShortcode() );
 
 			ob_start();
+
+			// Translation
+			if( $atts['lang'] ){
+				require_once( 'lib/vars.php' );
+				$labels = apply_filters( 'meteor-labels', array() );
+				$this->setLabels( $labels );
+			}
 
 			$error_flag = false;
 
