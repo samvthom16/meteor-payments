@@ -33,7 +33,7 @@
 				<th scope="row">English</th>
 				<th scope="row">German</th>
 			</tr>
-	<?php foreach( $labels_db as $key => $value ):?>
+	<?php foreach( $labels as $key => $value ):?>
 			<tr>
 				<th scope="row"><label><?php _e( $value['en'] );?></label></th>
 				<?php foreach ( array( 'en', 'de' ) as $lang ):?>
