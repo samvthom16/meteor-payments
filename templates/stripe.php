@@ -39,12 +39,13 @@
 				'fields_class'	=> 'fields fields-amount',
 				'fields' 	=> array(
 					'currency'	=> array(
-						'type'				=> 'dropdown',
-						'name'				=> 'Currency',
-						'options'			=> METEOR_DATA::getInstance()->currencies(),
-						'label'				=> $this->get_label( 'currency', $lang ),
+						'type'						=> 'dropdown',
+						'name'						=> 'Currency',
+						'options'					=> METEOR_DATA::getInstance()->currencies(),
+						'label'						=> $this->get_label( 'currency', $lang ),
 						'container_class'	=> 'form-field',
-						'class'				=> 'field-required',
+						'class'						=> 'field-required',
+						'default'					=> $atts['currency']
 					),
 					'amount_choices' => array(
 						'label'				=> $this->get_label( 'amount_choices', $lang ),
@@ -63,11 +64,11 @@
 					),
 					'custom-amount'	=> array(
 						'container_class'	=> 'form-field form-custom-amount',
-						'type'			=> 'number',
-						'name'			=> 'AmountCustom',
-						'placeholder'	=> $this->get_label( 'custom-amount', $lang ),
-						'size'			=> '50'	,
-						'class'			=> 'fields',
+						'type'						=> 'number',
+						'name'						=> 'AmountCustom',
+						'placeholder'			=> $this->get_label( 'custom-amount', $lang ),
+						'size'						=> '50'	,
+						'class'						=> 'fields',
 					),
 					'amount'	=> array(
 						'type'	=> 'hidden',
@@ -75,9 +76,10 @@
 						'value'	=> 0
 					),
 					'label-amount'	=> array(
+						'label'						=> $this->get_label( 'total', $lang ),
 						'container_class'	=> 'form-field',
-						'class'				=> 'label-amount',
-						'type'	=> 'label'
+						'class'						=> 'label-amount',
+						'type'						=> 'label'
 					),
 				)
 			),

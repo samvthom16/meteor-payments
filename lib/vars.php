@@ -128,6 +128,10 @@ add_filter( 'meteor-labels', function( $labels ){
       'en'  => 'Submit',
       'de'  => 'einreichen'
     ),
+    'total' => array(
+      'en'  => 'Total',
+      'de'  => 'Gesamt'
+    )
   );
   return $labels;
 });

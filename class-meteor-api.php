@@ -300,9 +300,10 @@
 		function main_shortcode( $atts ){
 
 			$atts = shortcode_atts( array(
-				'name' 		=> 'Donation Form',
+				'name' 			=> 'Donation Form',
 				'source_id'	=> '00000',
-				'lang'	=>	'en'
+				'lang'			=>	'en',
+				'currency'	=> 'GBP'
 			), $atts, $this->getShortcode() );
 
 			ob_start();
