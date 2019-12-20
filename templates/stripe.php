@@ -267,7 +267,7 @@
 ?>
 
 <!-- stripe payment form -->
-<form method="POST" data-behaviour='meteor-stripe-form meteor-slides' data-url="<?php _e( admin_url('admin-ajax.php')."?action=meteor_process_form" );?>">
+<form method="POST" data-locale="<?php _e( $lang );?>" data-behaviour='meteor-stripe-form meteor-slides' data-url="<?php _e( admin_url('admin-ajax.php')."?action=meteor_process_form" );?>">
 	<!-- display errors returned by createToken -->
 	<?php
 
