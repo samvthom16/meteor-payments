@@ -177,10 +177,10 @@ class METEOR_STRIPE extends METEOR_BASE{
 				//	CUSTOMER DOES NOT EXIST SO ADD TO STRIPE
 				$customer = $this->createCustomer( $customerInfo );
 			}
-			//else{
+			else{
 				$customer->metadata = $customerInfo['metadata'];
 				$customer->save();
-			//}
+			}
 
 
 
@@ -225,7 +225,7 @@ class METEOR_STRIPE extends METEOR_BASE{
 				//'AddressCountry',
 				//'Email',
 				//'Phone',
-				//'ReadUkGiftAidAgreement',
+				'ReadUkGiftAidAgreement',
 			) );
 
 
