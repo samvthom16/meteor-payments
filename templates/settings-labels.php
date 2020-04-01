@@ -32,11 +32,13 @@
 				<th scope="row"></th>
 				<th scope="row">English</th>
 				<th scope="row">German</th>
+				<th scope="row">French</th>
+				<th scope="row">Spanish</th>
 			</tr>
 	<?php foreach( $labels as $key => $value ):?>
 			<tr>
 				<th scope="row"><label><?php _e( $value['en'] );?></label></th>
-				<?php foreach ( array( 'en', 'de' ) as $lang ):?>
+				<?php foreach ( array( 'en', 'de', 'fr', 'es' ) as $lang ):?>
 					<td>
 						<input type="text" name="meteor_labels[<?php _e( $key );?>][<?php _e( $lang );?>]" style="width: 100%; max-width: 400px;" value="<?php _e( $api->get_label( $key, $lang ) );?>" />
 					</td>
@@ -51,7 +53,6 @@
 			</tr>
 	 </tbody>
  </table>
-
 </form>
 
 
