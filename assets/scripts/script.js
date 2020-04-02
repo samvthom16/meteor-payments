@@ -104,6 +104,7 @@
 
 			var $form 	= $( this ),
 				locale 	= $form.data('locale') ? $form.data('locale') : 'en',
+				message = $form.data('msg') ? $form.data('msg') : 'Thank you for your donation.',
 				$submit	= $form.find('[type~=submit]'),
 				$loader = $form.find('.meteor-loader'),
 				$errors = $form.find('.payment-errors');
@@ -305,7 +306,7 @@
 				    console.log('3d Subs Failed');
 				  } else {
 				    // The payment has succeeded. Display a success message.
-				    showResponseOnFrontend({message: "Thank you for your donation."});
+				    showResponseOnFrontend({message: message});
 				  }
 				});
 			}

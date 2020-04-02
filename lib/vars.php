@@ -195,6 +195,12 @@ add_filter( 'meteor-labels', function( $labels ){
       'de'  => 'Gesamt',
       'fr'  => 'Total',
       'es'  => 'Total'
+    ),
+    'thank_you' => array(
+      'en'  => 'Thank you for your donation.',
+      'de'  => 'Vielen Dank für Ihre Spende.',
+      'fr'  => 'Merci pour votre don.',
+      'es'  => 'Gracias por tu donación.'
     )
   );
   return $labels;
