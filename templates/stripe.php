@@ -278,6 +278,7 @@
 	?>
 	<div class="payment-errors"><?php if( $error_flag ) _e( $error_flag );?></div>
 	<div style="margin-top: 30px;font-style:italic;"><?php echo $this->get_label( 'form-message-below', $lang );?></div>
+	<input type="hidden" name="meteor-success-msg" value="<?php _e( $this->get_label( 'thank_you', $lang ) );?>" />
 </form>
 <style>
 

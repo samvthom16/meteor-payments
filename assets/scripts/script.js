@@ -109,7 +109,6 @@
 				$loader = $form.find('.meteor-loader'),
 				$errors = $form.find('.payment-errors');
 
-
 			// clientSecret to complete payment
 			var clientSecret;
 

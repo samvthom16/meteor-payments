@@ -245,9 +245,9 @@ class METEOR_STRIPE extends METEOR_BASE{
 						if($subs_status == 'active') {
 
 							echo json_encode([
-								"type" => "subscription",
-								"status" => "success",
-								"message" => "Thank you for your donation."
+								"type" 		=> "subscription",
+								"status" 	=> "success",
+								"message" => $data['meteor-success-msg']
 							]);
 
 						} elseif( $subs_status == 'incomplete' && $intent_status == 'requires_payment_method' ) {
@@ -284,7 +284,7 @@ class METEOR_STRIPE extends METEOR_BASE{
 
 				}
 
-				$this->generatePaymentResponse($intent);
+				$this->generatePaymentResponse( $intent, $data['meteor-success-msg'] );
 
 			} catch (\Stripe\Error\Base $e) {
 				# Display error on client
@@ -304,7 +304,7 @@ class METEOR_STRIPE extends METEOR_BASE{
 	}
 
 
-	 function generatePaymentResponse($intent) {
+	 function generatePaymentResponse( $intent, $success_message = "Thank you for your donation." ) {
 		# Note that if your API version is before 2019-02-11, 'requires_action'
 		# appears as 'requires_source_action'.
 		if ($intent->status == 'requires_action' &&
@@ -322,7 +322,7 @@ class METEOR_STRIPE extends METEOR_BASE{
 
 			echo json_encode([
 				"success" => true,
-				"message" => "Thank you for your donation."
+				"message" => $success_message
 			]);
 		} else {
 		# Invalid status

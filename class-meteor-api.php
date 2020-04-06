@@ -282,7 +282,7 @@
 
 				$uri = plugin_dir_url( __FILE__ );
 
-				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/script.js', array('jquery'), '1.1.5', true);
+				wp_enqueue_script( 'meteor-api', $uri.'assets/scripts/script.js', array('jquery'), '1.1.7', true);
 
 				wp_localize_script( 'meteor-api', 'meteor_settings', array(
 					'key'	=> $this->getStripeAPI()->getStripeKeys()['publishable']
